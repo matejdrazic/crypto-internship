@@ -8,9 +8,7 @@ const Header = () => {
                 Welcome to <a href="https://blankhq.co/internship">Crypto internship!</a>
             </h1>
             <nav>
-                <Link href="/" ><a>Create a Token</a></Link>
-                <Link href="/sendOrSign" ><a>Send/Sign</a></Link>
-                <Link href="/about" ><a>About</a></Link>
+                
             </nav>
         </div>
     )
