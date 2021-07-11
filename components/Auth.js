@@ -2,6 +2,8 @@ import Cookies from "js-cookie"
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Layout from './Layout'
+import Image from 'next/image'
 
 export default function Auth(Component) {
 
@@ -9,10 +11,13 @@ export default function Auth(Component) {
 
         if (!Cookies.get("address")) {
             return (
-                <div>
-                    You're not authenticated to see this page!
-                    Please <Link href="/" ><a>log in</a></Link> !
-                </div>
+                <Layout>
+                    <div className="not_found">
+                        <Image src="/authority.jpg" width="430px" height="240px" />
+                        <h3>You're not authenticated to see this page!
+                        Please <Link href="/" ><a>log in</a></Link> !</h3>
+                    </div>
+                </Layout>
             )
         }
 

@@ -3,6 +3,8 @@ import Link from 'next/link'
 import Cookies from 'js-cookie'
 import Button from '@material-ui/core/Button'
 import { useRouter } from 'next/router'
+import { green, purple } from '@material-ui/core/colors'
+import Image from 'next/image'
 
 const Header = () => {
 
@@ -10,19 +12,17 @@ const Header = () => {
 
     return (
         <div>
-            <h1 className={styles.title}>
-                Welcome to <a href="https://blankhq.co/internship">Crypto internship!</a>
-            </h1>
             <nav>
+                <div className="logo" >
+                    <Image src="/logo.png" alt="Page Logo" width={180} height={122} />
+                    <h2>createatoken.xyz</h2>
+                </div>
                 <Link href="/dashboard" >Dashboard</Link>
                 <Link href="/explore" >Explore</Link>
                 <Link href="/createatoken" >Create a Token</Link>
                 <Link href="/about" >About</Link>
-                <Button color="secondary" onClick={() => {
-                    Cookies.remove('address')
-                    router.push('/')
-                }} >Log out</Button>
             </nav>
+
         </div>
     )
 }
