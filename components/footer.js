@@ -1,21 +1,39 @@
 import styles from '../styles/Home.module.css'
+import Cookies from 'js-cookie'
 import Image from 'next/image'
+import Link from 'next/link'
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined'
+import Button from '@material-ui/core/Button'
+import * as clipboard from "clipboard-polyfill/text"
+import { useRouter } from 'next/router'
+import Box from '@material-ui/core/Box'
+import Container from '@material-ui/core/Container';
 
 const Footer = () => {
+
+    const router = useRouter()
+
     return (
         <footer className={styles.footer}>
-            <a
-                href="https://blankhq.co"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Powered by{' '}
-                <span className={styles.logo}>
-                    <Image src="/blank.png" alt="Vercel Logo" width={40} height={40} />
-                </span>
-            </a>
+            <Container component="main" maxWidth="s">
+                <Box display="flex" justifyContent="space-between">
+                    <Box>
+                        Logged in: {Cookies.get("address") ? Cookies.get("address") : "No one"}
+                        <Button>
+                            <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(Cookies.get('address')) }} />
+                        </Button>
+                    </Box>
+                    <Box>
+                        <Button className={styles.buttonStyle} onClick={() => {
+                            Cookies.remove('address')
+                            router.push('/')
+                        }} >Log out</Button>
+                    </Box>
+                </Box>
+            </Container>
         </footer>
     )
 }
+
 
 export default Footer;
