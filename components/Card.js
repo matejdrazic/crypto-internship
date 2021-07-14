@@ -7,8 +7,6 @@ import Box from '@material-ui/core/Box'
 
 const Style = "text-white text-xs"
 
-const arrayIcon = [<TransferWithinAStationIcon fontSize="small" className={Style} />, <AddIcon fontSize="small" className={Style} />]
-
 const Card = (props) => {
     const balance = localStorage.getItem(Cookies.get("address"))
 
@@ -16,8 +14,8 @@ const Card = (props) => {
         <Box component="div" onClick={props.onClick} className={styles.card}>
             <div>
                 <div></div>
-                <Box component="div" key={props.icon}display="inline" className={styles.right} >
-                    {arrayIcon[props.icon]}
+                <Box component="div" display="inline" className={styles.right} >
+                    {arrayIcon[props.icon] ? <TransferWithinAStationIcon fontSize="small" className={Style} /> : <AddIcon fontSize="small" className={Style} />}
                 </Box>
             </div>
             <p>

@@ -14,7 +14,7 @@ export default function Auth(Component) {
                 <Layout>
                     <div className="not_found">
                         <Image src="/authority.jpg" alt="cartman" width="430px" height="240px" />
-                        <h3>You're not authenticated to see this page!
+                        <h3>You&apos;re not authenticated to see this page!
                         Please <Link href="/" ><a>log in</a></Link> !</h3>
                     </div>
                 </Layout>
