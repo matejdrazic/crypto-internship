@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Cookies from 'js-cookie'
 import { green, purple } from '@material-ui/core/colors'
+import Image from 'next/image'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +56,7 @@ export default function Login() {
             </Head>
             <CssBaseline />
             <div className={classes.paper}>
-                <img src="../logo.png" width="400px" height="270px" />
+                <Image src="/logo.png" alt="logo" width="400px" height="270px" />
                 <Typography component="h1" variant="h5">
                     createatoken.xyz
                 </Typography>

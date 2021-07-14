@@ -13,7 +13,7 @@ export default function Auth(Component) {
             return (
                 <Layout>
                     <div className="not_found">
-                        <Image src="/authority.jpg" width="430px" height="240px" />
+                        <Image src="/authority.jpg" alt="cartman" width="430px" height="240px" />
                         <h3>You're not authenticated to see this page!
                         Please <Link href="/" ><a>log in</a></Link> !</h3>
                     </div>
@@ -23,4 +23,7 @@ export default function Auth(Component) {
 
         return <Component {...props} />;
     }
-};
+}
+
+Auth.displayName = 'Authorization'
+
