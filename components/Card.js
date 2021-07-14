@@ -15,7 +15,7 @@ const Card = (props) => {
             <div>
                 <div></div>
                 <Box component="div" display="inline" className={styles.right} >
-                    {arrayIcon[props.icon] ? <TransferWithinAStationIcon fontSize="small" className={Style} /> : <AddIcon fontSize="small" className={Style} />}
+                    {!props.icon ? <TransferWithinAStationIcon fontSize="small" className={Style} /> : <AddIcon fontSize="small" className={Style} />}
                 </Box>
             </div>
             <p>
