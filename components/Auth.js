@@ -25,5 +25,3 @@ export default function Auth(Component) {
     }
 }
 
-Auth.displayName = 'Authorization'
-

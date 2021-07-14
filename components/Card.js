@@ -13,10 +13,10 @@ const Card = (props) => {
     const balance = localStorage.getItem(Cookies.get("address"))
 
     return (
-        <Box key={props.icon} component="div" onClick={props.onClick} className={styles.card}>
+        <Box component="div" onClick={props.onClick} className={styles.card}>
             <div>
                 <div></div>
-                <Box component="div" display="inline" className={styles.right} >
+                <Box component="div" key={props.icon}display="inline" className={styles.right} >
                     {arrayIcon[props.icon]}
                 </Box>
             </div>
