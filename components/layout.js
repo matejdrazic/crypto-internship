@@ -3,7 +3,6 @@ import Footer from './Footer.js'
 import Head from 'next/head'
 
 const Layout = ({ children }) => {
-
     return (
         <div className="content" >
             <Head>
