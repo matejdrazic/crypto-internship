@@ -47,6 +47,11 @@ export default function Login() {
     const router = useRouter()
     const [validAddress, setValidAddress] = useState(false)
     const [ethAddress, setEthAddress] = useState(0)
+    const [load, setLoad] = useState(false)
+
+    setTimeout(() => {
+        setLoad(true)
+    }, 1500)
 
     return (
         <Container component="main" maxWidth="xs">
@@ -54,49 +59,51 @@ export default function Login() {
                 <title>Crypto internship</title>
                 <link rel="icon" href="/token.png" />
             </Head>
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Image src="/logo.png" alt="logo" width="400px" height="270px" />
-                <Typography component="h1" variant="h5">
-                    createatoken.xyz
-                </Typography>
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="ethAddress"
-                        label="Ethereum Address"
-                        name="ethAddress"
-                        helperText={validAddress ? "Address looks good" : "Please enter valid ethereum address"}
-                        error={!validAddress}
-                        onChange={(e) => {
-                            setEthAddress(e.target.value)
-                            e.target.value.length === 42 ? setValidAddress(true) : setValidAddress(false)
-                        }}
-                    />
-                    <ColorButton
-                        fullWidth
-                        variant="outlined"
-                        color={classes.bgColor}
-                        className={classes.submit}
-                        onClick={() => {
-                            if (validAddress) {
-                                Cookies.set('address', ethAddress, { expires: 1 / 24 })
-                                if (!localStorage.getItem(ethAddress)) {
-                                    localStorage.setItem(ethAddress, 0)
-                                }
-                                router.push("/dashboard")
-                            } else {
+            {load ? <div><CssBaseline />
+                <div className={classes.paper}>
+                    <Image src="/logo.png" alt="logo" width="400px" height="270px" />
+                    <Typography component="h1" variant="h5">
+                        createatoken.xyz
+                    </Typography>
+                    <form className={classes.form} noValidate>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="ethAddress"
+                            label="Ethereum Address"
+                            name="ethAddress"
+                            helperText={validAddress ? "Address looks good" : "Please enter valid ethereum address"}
+                            error={!validAddress}
+                            onChange={(e) => {
+                                setEthAddress(e.target.value)
+                                e.target.value.length === 42 ? setValidAddress(true) : setValidAddress(false)
+                            }}
+                        />
+                        <ColorButton
+                            fullWidth
+                            variant="outlined"
+                            color={classes.bgColor}
+                            className={classes.submit}
+                            onClick={() => {
+                                if (validAddress) {
+                                    Cookies.set('address', ethAddress, { expires: 1 / 24 })
+                                    if (!localStorage.getItem(ethAddress)) {
+                                        localStorage.setItem(ethAddress, 0)
+                                    }
+                                    router.push("/dashboard")
+                                } else {
 
-                            }
-                        }}
-                    >
-                        <b>Login</b>
-                    </ColorButton>
-                </form>
-            </div>
+                                }
+                            }}
+                        >
+                            <b>Login</b>
+                        </ColorButton>
+                    </form>
+                </div>
+            </div> : ""}
+
         </Container>
     );
 }
