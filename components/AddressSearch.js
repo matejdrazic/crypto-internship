@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
+import React, { useState } from 'react'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Container from '@material-ui/core/Container'
 import Cookies from 'js-cookie'
 import styles from '../styles/Home.module.css'
 import Box from '@material-ui/core/Box'
+import Web3 from 'web3'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
+
+let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545")
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const AddressSearch = () => {
     const [validAddress, setValidAddress] = useState(false)
     const [balance, setBalance] = useState("")
-    const [addressTypedIn, setAddressTypedIn] = useState("")
+    const [address, setAddress] = useState("")
+    const [alert, setAlert] = useState(false)
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setAlert(false);
+    };
 
     return (
         <div>
@@ -23,25 +41,24 @@ const AddressSearch = () => {
                         label="Ethereum Address"
                         name="ethAddress"
                         autoFocus
-                        helperText={validAddress ? "Address looks good" : "Please enter valid ethereum address"}
-                        error={!validAddress}
                         onChange={(e) => {
-                            e.target.value.length === 42 ? setValidAddress(true) : setValidAddress(false)
-                            setAddressTypedIn(e.target.value)
+                            setAddress(e.target.value)
                         }}
                     />
                     <Button
                         color="primary"
                         onClick={() => {
-                            if (validAddress) {
+                            if (web3.utils.isAddress(address)) {
                                 console.log()
-                                if (!localStorage.hasOwnProperty(addressTypedIn)) {
+                                if (!localStorage.hasOwnProperty(address)) {
                                     localStorage.setItem(addressTypedIn, 0)
                                     setBalance(0)
                                 } else {
-                                    console.log(localStorage.getItem(addressTypedIn))
-                                    setBalance(localStorage.getItem(addressTypedIn))
+                                    console.log(localStorage.getItem(address))
+                                    setBalance(localStorage.getItem(address))
                                 }
+                            } else {
+                                setAlert(true)
                             }
                         }}
                     >Explore</Button>
@@ -50,6 +67,12 @@ const AddressSearch = () => {
                     <p>Balance is: {balance} </p>
                 </div>
             </Container>
+
+            <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
+                <Alert severity="error" onClose={handleClose}>
+                    Address invalid!
+                </Alert>
+            </Snackbar>
         </div >
     )
 }

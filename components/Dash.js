@@ -12,6 +12,10 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
+import Web3 from 'web3'
+
+
+let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -42,10 +46,10 @@ export default function Dash() {
     const [transferOpen, setTransferOpen] = useState(false)
     const [mintOpen, setMintOpen] = useState(false)
     const [validAmount, setValidAmount] = useState(true)
-    const [validAddress, setValidAddress] = useState(false)
     const [amountTypedIn, setAmountTypedIn] = useState(0)
-    const [addressTypedIn, setAddressTypedIn] = useState("")
+    const [addressTransfer, setAddressTransfer] = useState("")
     const [alert, setAlert] = useState(false);
+    const [alertAddress, setAlertAddress] = useState(false);
     const [operation, setOperation] = useState("");
 
     const address = Cookies.get("address")
@@ -74,7 +78,9 @@ export default function Dash() {
         }
 
         setAlert(false);
+        setAlertAddress(false);
     };
+    
 
     return (
         <div className={styles.flex} >
@@ -121,29 +127,28 @@ export default function Dash() {
                                 id="ethAddress"
                                 label="Ethereum Address"
                                 name="ethAddress"
-                                error={!validAddress}
-                                helperText={validAddress ? "Address looks good" : "Please enter valid ethereum address"}
                                 onChange={(e) => {
-                                    setAddressTypedIn(e.target.value)
-                                    e.target.value.length === 42 ? setValidAddress(true) : setValidAddress(false)
+                                    setAddressTransfer(e.target.value)
                                 }}
                             />
                         </div>
                         <div>
                             <Button onClick={() => {
-                                if (validAddress && validAmount) {
+                                if (web3.utils.isAddress(addressTransfer) && validAmount) {
                                     const newEthAmount = ethAmount - amountTypedIn
                                     localStorage.setItem(address, newEthAmount)
-                                    if (!localStorage.getItem(addressTypedIn)) {
-                                        localStorage.setItem(addressTypedIn, amountTypedIn)
+                                    if (!localStorage.getItem(addressTransfer)) {
+                                        localStorage.setItem(addressTransfer, amountTypedIn)
                                     } else {
-                                        const currentAmount = parseFloat(localStorage.getItem(addressTypedIn))
+                                        const currentAmount = parseFloat(localStorage.getItem(addressTransfer))
                                         const newEthAmountTwo = currentAmount + amountTypedIn
-                                        localStorage.setItem(addressTypedIn, newEthAmountTwo)
+                                        localStorage.setItem(addressTransfer, newEthAmountTwo)
                                     }
                                     setAlert(true)
                                     setOperation("transfer")
                                     handleTransferClose()
+                                } else {
+                                    setAlertAddress(true)
                                 }
                             }} >Transfer</Button>
                         </div>
@@ -203,6 +208,11 @@ export default function Dash() {
             <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
                 <Alert severity="success" onClose={handleClose}>
                     Successful {operation}!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose}>
+                <Alert severity="error" onClose={handleClose}>
+                    Address invalid!
                 </Alert>
             </Snackbar>
         </div>

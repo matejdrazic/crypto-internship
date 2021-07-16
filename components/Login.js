@@ -11,7 +11,11 @@ import Head from 'next/head'
 import Cookies from 'js-cookie'
 import { green, purple } from '@material-ui/core/colors'
 import Image from 'next/image'
+import Web3 from 'web3'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
 
+let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -42,16 +46,29 @@ const ColorButton = withStyles((theme) => ({
     },
 }))(Button);
 
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 export default function Login() {
     const classes = useStyles()
     const router = useRouter()
     const [validAddress, setValidAddress] = useState(false)
-    const [ethAddress, setEthAddress] = useState(0)
+    const [ethAddress, setEthAddress] = useState("")
     const [load, setLoad] = useState(false)
+    const [alert, setAlert] = useState(false);
 
     setTimeout(() => {
         setLoad(true)
-    }, 1500)
+    }, 1000)
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setAlert(false);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -74,11 +91,8 @@ export default function Login() {
                             id="ethAddress"
                             label="Ethereum Address"
                             name="ethAddress"
-                            helperText={validAddress ? "Address looks good" : "Please enter valid ethereum address"}
-                            error={!validAddress}
                             onChange={(e) => {
                                 setEthAddress(e.target.value)
-                                e.target.value.length === 42 ? setValidAddress(true) : setValidAddress(false)
                             }}
                         />
                         <ColorButton
@@ -87,14 +101,15 @@ export default function Login() {
                             color={classes.bgColor}
                             className={classes.submit}
                             onClick={() => {
-                                if (validAddress) {
+                                if (web3.utils.isAddress(ethAddress)) {
                                     Cookies.set('address', ethAddress, { expires: 1 / 24 })
                                     if (!localStorage.getItem(ethAddress)) {
                                         localStorage.setItem(ethAddress, 0)
                                     }
                                     router.push("/dashboard")
-                                } else {
 
+                                } else {
+                                    setAlert(true)
                                 }
                             }}
                         >
@@ -103,6 +118,12 @@ export default function Login() {
                     </form>
                 </div>
             </div> : ""}
+
+            <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
+                <Alert severity="error" onClose={handleClose}>
+                    Address invalid!
+                </Alert>
+            </Snackbar>
 
         </Container>
     );
