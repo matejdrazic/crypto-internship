@@ -22,10 +22,27 @@ nav {
   border-bottom: 1px solid #ddd;
 }
 nav a {
-  margin-left: 12px;
+  margin-left: 10px;
+  padding: 3px
 }
+
+nav a:hover   {
+  color: #AA01FA;
+  border-bottom: 1px solid;
+} 
+
+.selected {
+  color: black;
+  border-bottom: 1px solid;
+} 
+
 nav .logo {
   margin-right: auto;
+  font-size: 20px;
+  font-family: "Nunito";
+  background: -webkit-linear-gradient(#FF67F9, #AA01FA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 footer {
   display: block;
@@ -45,3 +62,26 @@ footer {
   text-decoration: underline;
   font-family: "Nunito";
 }
+
+.button {
+  color: white;
+  background-color: #FF1183;
+  border: none;
+  padding: 8px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  font-family: "Nunito";
+  margin: 2px;
+}
+
+.textNunito {
+  font-family: Nunito;
+}
+
+.textSize {
+  font-size: 25px;
+}
+

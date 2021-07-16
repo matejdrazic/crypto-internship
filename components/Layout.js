@@ -1,8 +1,10 @@
 import Header from './Header.js'
 import Footer from './Footer.js'
 import Head from 'next/head'
+import { useState } from 'react'
 
 const Layout = ({ children }) => {
+
     return (
         <div className="content" >
             <Head>

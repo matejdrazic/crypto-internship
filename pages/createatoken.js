@@ -1,4 +1,5 @@
 import Layout from '../components/Layout.js'
+import Auth from '../components/Auth.js'
 
 const createatoken = () => {
     return (
@@ -8,4 +9,4 @@ const createatoken = () => {
     )
 }
 
-export default createatoken
+export default Auth(createatoken)

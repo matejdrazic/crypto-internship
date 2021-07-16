@@ -31,42 +31,42 @@ const AddressSearch = () => {
 
     return (
         <div>
-            <Container component="main" maxWidth="xs">
-                <Box display="flex" justifyContent="space-between">
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        id="ethAddress"
-                        label="Ethereum Address"
-                        name="ethAddress"
-                        autoFocus
-                        onChange={(e) => {
-                            setAddress(e.target.value)
-                        }}
-                    />
-                    <Button
-                        color="primary"
-                        onClick={() => {
-                            if (web3.utils.isAddress(address)) {
-                                console.log()
-                                if (!localStorage.hasOwnProperty(address)) {
-                                    localStorage.setItem(addressTypedIn, 0)
-                                    setBalance(0)
-                                } else {
-                                    console.log(localStorage.getItem(address))
-                                    setBalance(localStorage.getItem(address))
-                                }
+            <div width="100px">
+                <TextField
+                    size="medium"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    id="ethAddress"
+                    label="Ethereum Address"
+                    name="ethAddress"
+                    autoFocus
+                    style = {{width: 440}}
+                    onChange={(e) => {
+                        setAddress(e.target.value)
+                    }}
+                />
+            </div>
+            <div>
+                <Button
+                    class="button"
+                    onClick={() => {
+                        if (web3.utils.isAddress(address)) {
+                            console.log()
+                            if (!localStorage.hasOwnProperty(address)) {
+                                localStorage.setItem(addressTypedIn, 0)
+                                setBalance(0)
                             } else {
-                                setAlert(true)
+                                console.log(localStorage.getItem(address))
+                                setBalance(localStorage.getItem(address))
                             }
-                        }}
-                    >Explore</Button>
-                </Box>
-                <div>
-                    <p>Balance is: {balance} </p>
-                </div>
-            </Container>
+                        } else {
+                            setAlert(true)
+                        }
+                    }}
+                >Explore</Button>
+            </div>
+            <p class="textNunito textSize" >Balance: <b>{balance}</b> ETH </p>
 
             <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
                 <Alert severity="error" onClose={handleClose}>

@@ -17,14 +17,14 @@ const Footer = () => {
         <footer className={styles.footer}>
             <Container component="main" maxWidth="s">
                 <Box display="flex" justifyContent="space-between">
-                    <Box>
+                    <Box class="textNunito">
                         Logged in: {Cookies.get("address") ? Cookies.get("address") : "No one"}
                         <Button>
                             <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(Cookies.get('address')) }} />
                         </Button>
                     </Box>
                     <Box>
-                        <Button className={styles.buttonStyle} onClick={() => {
+                        <Button class="button" onClick={() => {
                             Cookies.remove('address')
                             router.push('/')
                         }} >Log out</Button>

@@ -80,7 +80,7 @@ export default function Login() {
                 <div className={classes.paper}>
                     <Image src="/logo.png" alt="logo" width="400px" height="270px" />
                     <Typography component="h1" variant="h5">
-                        createatoken.xyz
+                        <h2 class="textNunito textSize">createatoken.xyz</h2>
                     </Typography>
                     <form className={classes.form} noValidate>
                         <TextField
