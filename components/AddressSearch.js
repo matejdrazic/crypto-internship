@@ -66,7 +66,7 @@ const AddressSearch = () => {
                     }}
                 >Explore</Button>
             </div>
-            <p class="textNunito textSize" >Balance: <b>{balance}</b> ETH </p>
+            <p className="textNunito textSize" >Balance: <b>{balance}</b> ETH </p>
 
             <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
                 <Alert severity="error" onClose={handleClose}>

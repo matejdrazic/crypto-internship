@@ -20,10 +20,10 @@ const Header = () => {
                     <h2>createatoken.xyz</h2>
                 </div>
                 <div class="textNunito">
-                    <Link href="/dashboard" ><a class={router.pathname === "/dashboard" ? "selected" : "" } >Dashboard</a></Link>
-                    <Link href="/explore" ><a class={router.pathname === "/explore" ? "selected" : "" } >Explore</a></Link>
-                    <Link href="/createatoken" ><a class={router.pathname === "/createatoken" ? "selected" : "" } >Create a Token</a></Link>
-                    <Link href="/about" ><a class={router.pathname === "/about" ? "selected" : "" } >About</a></Link>
+                    <Link href="/dashboard" ><a className={router.pathname === "/dashboard" ? "selected" : "" } >Dashboard</a></Link>
+                    <Link href="/explore" ><a className={router.pathname === "/explore" ? "selected" : "" } >Explore</a></Link>
+                    <Link href="/createatoken" ><a className={router.pathname === "/createatoken" ? "selected" : "" } >Create a Token</a></Link>
+                    <Link href="/about" ><a className={router.pathname === "/about" ? "selected" : "" } >About</a></Link>
                 </div>
             </nav>
         </div>
