@@ -31,7 +31,7 @@ const AddressSearch = () => {
 
     return (
         <div>
-            <div width="100px">
+            <div width="80px">
                 <TextField
                     size="medium"
                     variant="outlined"
@@ -41,7 +41,7 @@ const AddressSearch = () => {
                     label="Ethereum Address"
                     name="ethAddress"
                     autoFocus
-                    style = {{width: 440}}
+                    style = {{width: 370, margin: 10}}
                     onChange={(e) => {
                         setAddress(e.target.value)
                     }}
@@ -50,6 +50,7 @@ const AddressSearch = () => {
             <div>
                 <Button
                     class="button"
+                    style = {{margin: 10}}
                     onClick={() => {
                         if (web3.utils.isAddress(address)) {
                             console.log()
