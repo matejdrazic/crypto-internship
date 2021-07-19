@@ -3,13 +3,12 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Container from '@material-ui/core/Container'
 import Cookies from 'js-cookie'
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import Box from '@material-ui/core/Box'
-import Web3 from 'web3'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
+import web3 from './web3'
 
-let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545")
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -41,9 +40,9 @@ const AddressSearch = () => {
                     label="Ethereum Address"
                     name="ethAddress"
                     autoFocus
-                    style = {{width: 370, margin: 10}}
+                    style = {{width: 300, margin: 10}}
                     onChange={(e) => {
-                        setAddress(e.target.value)
+                        setAddress(e.target.value.toUpperCase())
                     }}
                 />
             </div>
@@ -55,7 +54,7 @@ const AddressSearch = () => {
                         if (web3.utils.isAddress(address)) {
                             console.log()
                             if (!localStorage.hasOwnProperty(address)) {
-                                localStorage.setItem(addressTypedIn, 0)
+                                localStorage.setItem(address, 0)
                                 setBalance(0)
                             } else {
                                 console.log(localStorage.getItem(address))

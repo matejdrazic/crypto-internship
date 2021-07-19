@@ -2,7 +2,7 @@ import Cookies from "js-cookie"
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Layout from './Layout'
+import Layout from '../Shared/Layout'
 import Image from 'next/image'
 
 export default function Auth(Component) {

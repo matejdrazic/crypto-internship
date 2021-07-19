@@ -1,4 +1,4 @@
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
 import Menu from './Menu'
 import Cookies from 'js-cookie'
