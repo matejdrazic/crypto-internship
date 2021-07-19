@@ -1,4 +1,4 @@
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -18,26 +18,16 @@ const Footer = () => {
     const isMatch = useMediaQuery(theme.breakpoints.down('sm'))
 
     return (
-        isMatch ? (
-            <footer className={styles.footer}>
-                <Container component="main" maxWidth="s">
-                    <Button class="button" onClick={() => {
-                        Cookies.remove('address')
-                        router.push('/')
-                    }} >Log out</Button>
-                </Container>
-            </footer>
-        ) : (
             <footer className={styles.footer}>
                 <Container component="main" maxWidth="s">
                     <Box display="flex" justifyContent="space-between">
-                        <Box class="textNunito">
+                        <Box className={isMatch ? "hidden" : "textNunito"}>
                             Logged in: {Cookies.get("address") ? Cookies.get("address") : "No one"}
                             <Button>
                                 <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(Cookies.get('address')) }} />
                             </Button>
                         </Box>
-                        <Box>
+                        <Box className={isMatch ? "center" : ""} >
                             <Button class="button" onClick={() => {
                                 Cookies.remove('address')
                                 router.push('/')
@@ -45,7 +35,7 @@ const Footer = () => {
                         </Box>
                     </Box>
                 </Container>
-            </footer>)
+            </footer>
     )
 }
 

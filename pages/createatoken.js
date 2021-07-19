@@ -1,6 +1,6 @@
-import Layout from '../components/Layout.js'
-import Auth from '../components/Auth.js'
-import CreateToken from '../components/CreateToken.js'
+import Layout from '../components/Shared/Layout.js'
+import Auth from '../components/Authorization/Auth.js'
+import CreateToken from '../components/Token/CreateToken.js'
 
 const createatoken = () => {
     return (

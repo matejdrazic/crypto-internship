@@ -5,6 +5,12 @@ import { useState } from 'react'
 
 const Layout = ({ children }) => {
 
+    const [load, setLoad] = useState(false)
+
+    setTimeout(() => {
+        setLoad(true)
+    }, 200)
+
     return (
         <div className="content" >
             <Head>
@@ -12,8 +18,12 @@ const Layout = ({ children }) => {
                 <link rel="icon" href="/token.png" />
             </Head>
             <Header />
-            {children}
-            <Footer />
+            {load ? <>
+                {children}
+                <Footer />
+            </>
+                : ""}
+
         </div>
     )
 }

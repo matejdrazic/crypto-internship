@@ -1,6 +1,6 @@
 import Head from 'next/head'
-import Auth from '../components/Auth.js'
-import Layout from '../components/Layout.js'
+import Auth from '../components/Authorization/Auth.js'
+import Layout from '../components/Shared/Layout.js'
 
 const About = () => {
     return (
