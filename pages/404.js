@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Layout from '../components/Layout.js'
+import Layout from '../components/layout.js'
 import Image from 'next/image'
 
 const FourOFour = () => {
