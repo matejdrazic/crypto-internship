@@ -78,10 +78,18 @@ footer {
 }
 
 .textNunito {
-  font-family: Nunito;
+  font-family: "Nunito";
+}
+
+.hidden {
+  display: none
 }
 
 .textSize {
   font-size: 25px;
 }
 
+.center {
+  margin: 0 auto;
+  position: relative;
+}

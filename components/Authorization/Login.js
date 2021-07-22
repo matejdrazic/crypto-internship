@@ -11,11 +11,10 @@ import Head from 'next/head'
 import Cookies from 'js-cookie'
 import { green, purple } from '@material-ui/core/colors'
 import Image from 'next/image'
-import Web3 from 'web3'
+import web3 from '../Token/web3.js'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 
-let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -55,8 +54,8 @@ export default function Login() {
     const router = useRouter()
     const [validAddress, setValidAddress] = useState(false)
     const [ethAddress, setEthAddress] = useState("")
-    const [load, setLoad] = useState(false)
     const [alert, setAlert] = useState(false);
+    const [load, setLoad] = useState(false)
 
     setTimeout(() => {
         setLoad(true)
@@ -92,7 +91,7 @@ export default function Login() {
                             label="Ethereum Address"
                             name="ethAddress"
                             onChange={(e) => {
-                                setEthAddress(e.target.value)
+                                setEthAddress(e.target.value.toUpperCase())
                             }}
                         />
                         <ColorButton
