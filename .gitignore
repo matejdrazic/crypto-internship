@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+/contracts_cf/node_modules
+/contracts_cf/build
