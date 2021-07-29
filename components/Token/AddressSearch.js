@@ -39,7 +39,6 @@ const AddressSearch = () => {
                     id="ethAddress"
                     label="Ethereum Address"
                     name="ethAddress"
-                    autoFocus
                     style = {{width: 300, margin: 10}}
                     onChange={(e) => {
                         setAddress(e.target.value.toUpperCase())

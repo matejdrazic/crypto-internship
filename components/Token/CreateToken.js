@@ -14,7 +14,6 @@ const CreateToken = () => {
                     id="token"
                     label="Token Name"
                     name="tokenname"
-                    autoFocus
                     style={{ width: 300, margin: 10 }}
                     onChange={(e) => {
                     }}
