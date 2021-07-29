@@ -10,4 +10,4 @@ const explore = () => {
     )
 }
 
-export default Auth(explore)
+export default explore

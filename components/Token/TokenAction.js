@@ -20,7 +20,7 @@ const Card = (props) => {
                 {props.title}
             </p>
             <p>
-                {balance} ETH
+                {props.balance === 0 ? '' : props.balance} {props.tokenSymbol ? props.tokenSymbol : "Token Not Selected"}
             </p>
         </Box>
     )

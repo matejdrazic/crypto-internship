@@ -9,10 +9,12 @@ import router from 'next/router';
 
 export default function Home() {
 
-  const ethAddress = Cookies.get('address')
+  const [address, setAddress] = useState(false)
 
-  if (ethAddress) {
+  if (address) {
     router.push('/dashboard')
     return null
-  } else return <Login />
+  } else return <Login setAddress={setAddress} />
 }
+
+

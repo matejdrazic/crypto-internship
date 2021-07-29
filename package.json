@@ -17,6 +17,7 @@
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^3.0.3",
     "js-cookie": "^2.2.1",
+    "lottie-web": "^5.7.12",
     "mocha": "^9.0.2",
     "next": "^11.0.1",
     "react": "^17.0.2",

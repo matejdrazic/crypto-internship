@@ -7,15 +7,15 @@ import './Token.sol';
 
 contract CoinFactory {
     
-    ERC20 token;
+    Token token;
     mapping (string => address) public tokensCreated;
     mapping (address => string) public owners;
     string[] private names;
     
     event TokenCreated (address owner, address token, string name);
 
-    function createERC20Token (string memory _name, string memory _symbol) external returns (address) {
-        token = new ERC20 (_name, _symbol);
+    function createERC20Token (string memory _name, string memory _symbol, uint256 _amount) external returns (address) {
+        token = new Token (_name, _symbol, _amount, msg.sender);
         tokensCreated[_name] = address(token);
         names.push(_name);
         emit TokenCreated(msg.sender, address(token), _symbol);

@@ -34,3 +34,5 @@ yarn-error.log*
 .vercel
 
 /contracts_cf/build
+/contracts_cf/.secret
+

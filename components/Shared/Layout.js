@@ -1,7 +1,8 @@
 import Header from './Header.js'
 import Footer from './Footer.js'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useStyles } from 'react'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Layout = ({ children }) => {
 
@@ -9,7 +10,7 @@ const Layout = ({ children }) => {
 
     setTimeout(() => {
         setLoad(true)
-    }, 200)
+    }, 400)
 
     return (
         <div className="content" >
@@ -22,7 +23,7 @@ const Layout = ({ children }) => {
                 {children}
                 <Footer />
             </>
-                : ""}
+                :<div className="center"> <CircularProgress /> </div>}
 
         </div>
     )

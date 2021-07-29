@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Auth from "../Authorization/Auth.js"
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
@@ -14,6 +14,8 @@ import Snackbar from '../Shared/Snackbar'
 import DropdownMenu from './DropdownMenu'
 import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
+import CoinFactory from '../../contracts_cf/build/contracts/CoinFactory.json'
+import contract from './CoinFactory.js'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,9 +53,16 @@ export default function Dash() {
     const [alert, setAlert] = useState(false)
     const [alertAddress, setAlertAddress] = useState(false)
     const [operation, setOperation] = useState("")
+    const [names, setNames] = useState(null)
+    const [tokenContract, setTokenContract] = useState(null)
+    const [tokenSymbol, setTokenSymbol] = useState(null)
+    const [isToken, setIsToken] = useState(false)
+    const [balance, setBalance] = useState(0)
 
-    const address = Cookies.get("address")
-    let ethAmount = parseFloat(localStorage.getItem(address))
+
+    useEffect(async () => {
+        contract.methods.getNames().call({ from: ethereum.selectedAddress }).then(names => { setNames(names) })
+    })
 
     const classes = useStyles();
 
@@ -72,24 +81,43 @@ export default function Dash() {
     const handleMintClose = () => {
         setMintOpen(false);
     };
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        setAlert(false);
-        setAlertAddress(false);
+        setAlert(false)
+        setAlertAddress(false)
+        setIsToken(false)
     };
 
+    let mint = async (to, amount) => {
+        await tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
+            setBalance(amountTypedIn + balance)
+            setAlert(true)
+            setOperation("minting")
+            handleMintClose()
+        })
+    }
+
+    let transfer = async (to, amount) => {
+        await tokenContract.methods.transfer(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
+            setBalance(balance - amountTypedIn)
+            setAlert(true)
+            setOperation("transfer")
+            handleTransferClose()
+        })
+    }
 
     return (
         <>
             <div className={styles.flex} >
-                <DropdownMenu />
+                <DropdownMenu names={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
             </div>
             <div className={styles.flex} >
-                <TokenAction title="Transfer" icon={0} onClick={handleTransferOpen} />
-                <TokenAction title="Mint" icon={1} onClick={handleMintOpen} />
+                <TokenAction title="Transfer" icon={0} onClick={() => { tokenContract ? setTransferOpen(true) : setIsToken(true) }} tokenSymbol={tokenSymbol} balance={balance} />
+                <TokenAction title="Mint" icon={1} onClick={() => { tokenContract ? setMintOpen(true) : setIsToken(true) }} tokenSymbol={tokenSymbol} balance={balance} />
                 <Modal
                     aria-labelledby="transition-modal-title"
                     aria-describedby="transition-modal-description"
@@ -119,7 +147,7 @@ export default function Dash() {
                                     error={!validTransferAmount}
                                     onChange={(e) => {
                                         setAmountTypedIn(parseFloat(e.target.value))
-                                        ethAmount >= parseFloat(e.target.value) && parseFloat(e.target.value) >= 0 ? setValidTransferAmount(true) : setValidTransferAmount(false)
+                                        balance >= parseFloat(e.target.value) && parseFloat(e.target.value) >= 0 ? setValidTransferAmount(true) : setValidTransferAmount(false)
                                     }}
                                 />
                             </div>
@@ -132,25 +160,15 @@ export default function Dash() {
                                     label="Ethereum Address"
                                     name="ethAddress"
                                     onChange={(e) => {
-                                        setAddressTransfer(e.target.value.toUpperCase())
+                                        setAddressTransfer(e.target.value.toString())
                                     }}
                                 />
                             </div>
                             <div>
                                 <Button onClick={() => {
-                                    if (web3.utils.isAddress(addressTransfer) && validTransferAmount && Cookies.get("address") != addressTransfer) {
-                                        const newEthAmount = ethAmount - amountTypedIn
-                                        localStorage.setItem(address, newEthAmount)
-                                        if (!localStorage.getItem(addressTransfer)) {
-                                            localStorage.setItem(addressTransfer, amountTypedIn)
-                                        } else {
-                                            const currentAmount = parseFloat(localStorage.getItem(addressTransfer))
-                                            const newEthAmountTwo = currentAmount + amountTypedIn
-                                            localStorage.setItem(addressTransfer, newEthAmountTwo)
-                                        }
-                                        setAlert(true)
-                                        setOperation("transfer")
-                                        handleTransferClose()
+                                    if (web3.utils.isAddress(addressTransfer) && validTransferAmount) {
+                                        let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                        transfer(addressTransfer, amountInWei)
                                     } else {
                                         setAlertAddress(true)
                                     }
@@ -196,13 +214,8 @@ export default function Dash() {
                             <div>
                                 <Button onClick={() => {
                                     if (validAmount) {
-                                        const address = Cookies.get("address")
-                                        const ethAmount = parseFloat(localStorage.getItem(address))
-                                        const balance = ethAmount + amountTypedIn
-                                        localStorage.setItem(address, balance)
-                                        handleMintClose()
-                                        setOperation("minting")
-                                        setAlert(true)
+                                        let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                        mint(ethereum.selectedAddress, amountInWei)
                                     }
                                 }} >MINT</Button>
                             </div>
@@ -210,8 +223,10 @@ export default function Dash() {
                     </Fade>
 
                 </Modal>
+
                 <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose} severity="success" operation={operation} />
                 <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose} severity="error" />
+                <Snackbar open={isToken} autoHideDuration={2000} onClose={handleClose} severity="error" />
             </div>
         </>
     )

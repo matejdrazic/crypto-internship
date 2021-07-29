@@ -9,7 +9,7 @@ const Snackbar = (props) => {
     return (
         <SnackbarM open={props.open} autoHideDuration={2000} onClose={props.onClose}>
             <Alert severity={props.severity} onClose={props.onClose}>
-                {props.severity === "success" ? `Successful ${props.operation}!` : "Invalid arguments" } 
+                {props.severity === "success" ? `Successful ${props.operation}!` : "Something is wrong!" } 
             </Alert>
         </SnackbarM>
     )
