@@ -19,7 +19,14 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 13,
     color: purple[500],
   },
-
+  button: {
+    border: "2px solid #eaeaea",
+    borderRadius: '7px',
+    '&:hover': {
+      color: "#AA01FA",
+      borderColor: "#AA01FA",
+    },
+  },
 }));
 
 export default function MenuListComposition(props) {
@@ -66,7 +73,7 @@ export default function MenuListComposition(props) {
           onClick={handleToggle}
           startIcon={<ArrowDropDownIcon />}
           variant="outlined"
-          color="inherit"
+          className={classes.button}
         >
           Select Token
         </Button>

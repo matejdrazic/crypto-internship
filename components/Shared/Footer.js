@@ -10,36 +10,55 @@ import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container';
 import { useMediaQuery, useTheme } from '@material-ui/core'
 import { useState, useEffect } from 'react'
+import web3 from '../Token/web3.js'
+import ethPrice from './EthPrice.js'
 
-const Footer = () => {
+const Footer = (props) => {
 
     const [address, setAddress] = useState(null)
+    const [balance, setBalance] = useState(0)
+    const [balanceInUSD, setBalanceInUSD] = useState(0)
+    const [isBalance, setIsBalance] = useState(true)
 
     const router = useRouter()
     const theme = useTheme()
 
     const isMatch = useMediaQuery(theme.breakpoints.down('sm'))
 
-    useEffect(() => {
+    const handleBalanceClick = () => {
+        setIsBalance(!isBalance)
+    }
+
+    useEffect(async () => {
         setAddress(ethereum.selectedAddress)
+        const ethAmountInWei = await web3.eth.getBalance(ethereum.selectedAddress)
+        const ethAmount = web3.utils.fromWei(ethAmountInWei, 'ether')
+        const eth = ethAmount.substring(0, 6)
+        setBalance(eth)
+        const price = await ethPrice()
+        const balanceUSD = price * parseInt(eth)
+        setBalanceInUSD(balanceUSD.toFixed(2))
     })
 
     return (
-            <footer className={styles.footer}>
-                <Container component="main" maxWidth="s">
-                    <Box display="flex" justifyContent="space-between">
-                        <Box className={isMatch ? "hidden" : "textNunito"}>
-                            Logged in: {address ? address : "No one"}
-                            <Button>
-                                <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />
-                            </Button>
-                        </Box>
-                        <Box className={isMatch ? "center" : ""} >
-                            <Button class="button" >Ropsten</Button>
-                        </Box>
+        <footer className={styles.footer}>
+            <Container component="main" maxWidth="s">
+                <Box display="flex" justifyContent="space-between" className={styles.flex} >
+                    <Box className={isMatch ? "hidden" : "textNunito"} onClick={() => { handleBalanceClick() }} width="160px">
+                        <Button class="button"> {isBalance ? balance + " ETH" : balanceInUSD + " USD"} </Button>
                     </Box>
-                </Container>
-            </footer>
+                    <Box className="border" >
+                        {props.address ? props.address.substring(0, 8) + ' ... ' + props.address.substring(props.address.length - 6, props.address.length) : "Account not connected"}
+                        <Button>
+                            <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />
+                        </Button>
+                    </Box>
+                    <Box className={isMatch ? "center" : ""} >
+                        <Button class="button" >{props.chainName}</Button>
+                    </Box>
+                </Box>
+            </Container>
+        </footer>
     )
 }
 

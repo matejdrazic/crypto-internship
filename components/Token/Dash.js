@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
+        border: '2px solid #FF67F9',
+        borderRadius: '10px',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
@@ -165,14 +166,16 @@ export default function Dash() {
                                 />
                             </div>
                             <div>
-                                <Button onClick={() => {
-                                    if (web3.utils.isAddress(addressTransfer) && validTransferAmount) {
-                                        let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
-                                        transfer(addressTransfer, amountInWei)
-                                    } else {
-                                        setAlertAddress(true)
-                                    }
-                                }} >Transfer</Button>
+                                <Button
+                                    class="button"
+                                    onClick={() => {
+                                        if (web3.utils.isAddress(addressTransfer) && validTransferAmount) {
+                                            let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                            transfer(addressTransfer, amountInWei)
+                                        } else {
+                                            setAlertAddress(true)
+                                        }
+                                    }} >Transfer</Button>
                             </div>
                         </div>
                     </Fade>
@@ -212,12 +215,14 @@ export default function Dash() {
                                 />
                             </div>
                             <div>
-                                <Button onClick={() => {
-                                    if (validAmount) {
-                                        let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
-                                        mint(ethereum.selectedAddress, amountInWei)
-                                    }
-                                }} >MINT</Button>
+                                <Button
+                                    class="button"
+                                    onClick={() => {
+                                        if (validAmount) {
+                                            let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                            mint(ethereum.selectedAddress, amountInWei)
+                                        }
+                                    }} >MINT</Button>
                             </div>
                         </div>
                     </Fade>
