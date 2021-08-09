@@ -90,6 +90,6 @@ footer {
 }
 
 .center {
+  display: table;
   margin: 0 auto;
-  position: relative;
 }

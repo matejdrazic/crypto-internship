@@ -12,4 +12,4 @@ const About = () => {
     )
 }
 
-export default Auth(About)
+export default About

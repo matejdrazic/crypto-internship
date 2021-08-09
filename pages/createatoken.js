@@ -10,4 +10,4 @@ const createatoken = () => {
     )
 }
 
-export default Auth(createatoken)
+export default createatoken

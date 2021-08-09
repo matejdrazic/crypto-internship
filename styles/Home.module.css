@@ -127,6 +127,11 @@
 }
 
 .flex {
-  display: flex
+  display: flex;
+  align-items: baseline
+}
+
+.hide {
+  display: none
 }
 

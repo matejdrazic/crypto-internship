@@ -14,4 +14,4 @@ const dashboard = () => {
   )
 }
 
-export default Auth(dashboard)
+export default dashboard

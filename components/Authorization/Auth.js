@@ -9,7 +9,7 @@ export default function Auth(Component) {
 
     return (props) => {
 
-        if (!Cookies.get("address")) {
+        if (0) {
             return (
                 <Layout>
                     <div className="not_found">

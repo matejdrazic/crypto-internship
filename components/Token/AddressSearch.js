@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Container from '@material-ui/core/Container'
@@ -8,7 +8,8 @@ import Box from '@material-ui/core/Box'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 import web3 from './web3'
-
+import DropdownMenu from './DropdownMenu'
+import contract from './CoinFactory.js'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -16,9 +17,13 @@ function Alert(props) {
 
 const AddressSearch = () => {
     const [validAddress, setValidAddress] = useState(false)
-    const [balance, setBalance] = useState("")
+    const [balance, setBalance] = useState(0)
+    const [balanceToken, setBalanceToken] = useState(0)
     const [address, setAddress] = useState("")
     const [alert, setAlert] = useState(false)
+    const [names, setNames] = useState(null)
+    const [tokenContract, setTokenContract] = useState(null)
+    const [tokenSymbol, setTokenSymbol] = useState(null)
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -28,9 +33,20 @@ const AddressSearch = () => {
         setAlert(false);
     };
 
+    useEffect(async () => {
+        contract.methods.getNames().call({ from: ethereum.selectedAddress }).then(names => { setNames(names) })
+    })
+
+    const explore = async () => {
+        await tokenContract.methods.balanceOf(address.toString()).call({ from: ethereum.selectedAddress }).then(bal => {
+            const gotTokens = web3.utils.fromWei(bal, 'ether')
+            setBalanceToken(gotTokens)
+        })
+    }
+
     return (
-        <div>
-            <div width="80px">
+        <div className="center">
+            <div className={styles.flex} >
                 <TextField
                     size="medium"
                     variant="outlined"
@@ -39,34 +55,29 @@ const AddressSearch = () => {
                     id="ethAddress"
                     label="Ethereum Address"
                     name="ethAddress"
-                    style = {{width: 300, margin: 10}}
+                    style={{ width: 300, margin: 10 }}
                     onChange={(e) => {
-                        setAddress(e.target.value.toUpperCase())
+                        setAddress(e.target.value)
                     }}
                 />
+                <DropdownMenu names={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
             </div>
             <div>
                 <Button
                     class="button"
-                    style = {{margin: 10}}
+                    style={{ margin: 13 }}
                     onClick={() => {
                         if (web3.utils.isAddress(address)) {
-                            console.log()
-                            if (!localStorage.hasOwnProperty(address)) {
-                                localStorage.setItem(address, 0)
-                                setBalance(0)
-                            } else {
-                                console.log(localStorage.getItem(address))
-                                setBalance(localStorage.getItem(address))
-                            }
+                            explore()
                         } else {
                             setAlert(true)
                         }
                     }}
                 >Explore</Button>
             </div>
-            <p className="textNunito textSize" >Balance: <b>{balance}</b> ETH </p>
-
+            <div className="center">
+            <p className="textNunito textSize" >Balance: <b>{balanceToken}</b> {tokenSymbol ? tokenSymbol : ""} </p>
+            </div>
             <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
                 <Alert severity="error" onClose={handleClose}>
                     Address invalid!
