@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     border: "2px solid #eaeaea",
     borderRadius: '7px',
+    color: '#EA03BB',
     '&:hover': {
       color: "#AA01FA",
       borderColor: "#AA01FA",
@@ -33,6 +34,7 @@ export default function MenuListComposition(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
+  const [selected, setSelected] = useState('Select')
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -53,7 +55,6 @@ export default function MenuListComposition(props) {
     }
   }
 
-  // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -72,10 +73,11 @@ export default function MenuListComposition(props) {
           aria-haspopup="true"
           onClick={handleToggle}
           startIcon={<ArrowDropDownIcon />}
+          style={{ width: '100px' }}
           variant="outlined"
           className={classes.button}
         >
-          Select Token
+          {selected}
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (
@@ -90,6 +92,7 @@ export default function MenuListComposition(props) {
                     {props.names.map((tokenName, index) => {
                       return (
                         <MenuItem onClick={async () => {
+                          setSelected(tokenName)
                           await contract.methods.tokensCreated(tokenName).call({ from: ethereum.selectedAddress }).then(async (address) => {
                             const tokCon = new web3.eth.Contract(Token.abi, address)
                             props.setTokenContract(tokCon)

@@ -67,7 +67,7 @@ const AddressSearch = () => {
                     class="button"
                     style={{ margin: 13 }}
                     onClick={() => {
-                        if (web3.utils.isAddress(address)) {
+                        if (web3.utils.isAddress(address) && tokenContract) {
                             explore()
                         } else {
                             setAlert(true)
@@ -80,7 +80,7 @@ const AddressSearch = () => {
             </div>
             <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
                 <Alert severity="error" onClose={handleClose}>
-                    Address invalid!
+                    Address invalid or contract not selected!
                 </Alert>
             </Snackbar>
         </div >

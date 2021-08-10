@@ -10,7 +10,7 @@ a {
   text-decoration: none;
 }
 .content {
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 nav {
@@ -32,7 +32,6 @@ nav a:hover   {
 } 
 
 .selected {
-  color: black;
   border-bottom: 1px solid;
 } 
 
@@ -115,4 +114,9 @@ footer {
 .ropsten:hover {
   font-weight: bold;
   color: #AA01FA;
+}
+
+.themeChanger {
+  position: absolute;
+  margin-bottom: 60px; 
 }

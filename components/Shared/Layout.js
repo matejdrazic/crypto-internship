@@ -5,12 +5,15 @@ import web3 from '../Token/web3.js'
 import SwitchToRopsten from './SwitchToRopsten.js'
 import { useState, useStyles, useEffect } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { ThemeContext, ThemeProvider } from 'styled-components'
+import { lightTheme, darkTheme, GlobalStyles } from './Themes.js'
 
 const Layout = ({ children }) => {
 
     const [load, setLoad] = useState(false)
     const [chain, setChain] = useState(0)
     const [address, setAddress] = useState(null)
+    const [theme, setTheme] = useState('light')
 
     useEffect(() => {
         network()
@@ -44,21 +47,23 @@ const Layout = ({ children }) => {
         }
     }
 
-
     return (
-        <div className="content" >
-            <Head>
-                <title>Crypto internship</title>
-                <link rel="icon" href="/token.png" />
-            </Head>
-            <Header />
-            {load ? <>
-                {chain == 3 ? children : <SwitchToRopsten />}
-                <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
-            </>
-                : <div className="center"> <CircularProgress /> </div>}
+        <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme} >
+            <GlobalStyles />
+            <div className="content" >
+                <Head>
+                    <title>Crypto internship</title>
+                    <link rel="icon" href="/token.png" />
+                </Head>
+                <Header setTheme={setTheme} theme={theme} />
+                {load ? <>
+                    {chain == 3 ? children : <SwitchToRopsten />}
+                    <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
+                </>
+                    : <div className="center"> <CircularProgress /> </div>}
+            </div>
+        </ThemeProvider>
 
-        </div>
     )
 }
 
