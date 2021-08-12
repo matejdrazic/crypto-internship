@@ -40,6 +40,13 @@ const Footer = (props) => {
         setBalanceInUSD(balanceUSD.toFixed(2))
     })
 
+    // This function is to replace the 'connect' button necessary on the page in case user goes to /dashboard path since 
+    // Auth doesnt make sense anymore
+    
+    const maybeConnect = () => {
+        ethereum.selectedAddress ? null : ethereum.request({ method: 'eth_requestAccounts' })
+    }
+
     return (
         <footer className={styles.footer}>
             <Container component="main" maxWidth="s">
@@ -47,7 +54,7 @@ const Footer = (props) => {
                     <Box className={isMatch ? "hidden" : "textNunito"} onClick={() => { handleBalanceClick() }} width="160px">
                         <Button class="button"> {isBalance ? balance + " ETH" : balanceInUSD + " USD"} </Button>
                     </Box>
-                    <Box className="border" >
+                    <Box className="border" onClick={() => { maybeConnect() }} >
                         {props.address ? props.address.substring(0, 8) + ' ... ' + props.address.substring(props.address.length - 6, props.address.length) : "Account not connected"}
                         <Button>
                             <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />

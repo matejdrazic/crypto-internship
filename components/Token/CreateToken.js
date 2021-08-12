@@ -4,6 +4,10 @@ import React, { useEffect, useState, useRef } from 'react'
 import web3 from './web3.js'
 import contract from './CoinFactory.js'
 import Snackbar from '../Shared/Snackbar'
+import firestore from '../Database/Firebase.js'
+import saveToken from '../Database/SaveTokens.js'
+
+console.log(firestore)
 
 const CreateToken = () => {
 
@@ -16,8 +20,10 @@ const CreateToken = () => {
     const createERC20Token = async (Name, Symbol, Amount) => {
         await contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', async (tx) => {
             setAlert(true)
+            setAddress('wait for it...')
         }).then(address => {
             setAddress(address.events[0].address)
+            saveToken(Name, address.events[0].address)
         })
     }
 

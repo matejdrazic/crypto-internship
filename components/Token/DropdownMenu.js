@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
@@ -12,6 +12,10 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import Token from '../../contracts_cf/build/contracts/Token.json'
 import web3 from './web3'
 import contract from './CoinFactory.js'
+import firestore from '../Database/Firebase.js'
+import getNames from '../Database/TokenNames.js'
+import getAddress from '../Database/TokenAddress.js'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,10 +39,21 @@ export default function MenuListComposition(props) {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [selected, setSelected] = useState('Select')
+  const [names, setNames] = useState(null)
+
+  useEffect(async () => {
+  })
+
+  const settingUpTokenNames = async () => {
+    const namesTemp = await getNames()
+    setNames(namesTemp)
+  }
+
+  settingUpTokenNames()
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
-  };
+  }
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -62,7 +77,9 @@ export default function MenuListComposition(props) {
     }
 
     prevOpen.current = open;
+
   }, [open]);
+
 
   return (
     <div className={classes.root}>
@@ -71,9 +88,9 @@ export default function MenuListComposition(props) {
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={handleToggle}
+          onClick={() => { ethereum.selectedAddress ? handleToggle() : null }}
           startIcon={<ArrowDropDownIcon />}
-          style={{ width: '100px' }}
+          style={{ width: '120px' }}
           variant="outlined"
           className={classes.button}
         >
@@ -89,19 +106,19 @@ export default function MenuListComposition(props) {
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
 
-                    {props.names.map((tokenName, index) => {
+                    {names.map((tokenName, index) => {
                       return (
                         <MenuItem onClick={async () => {
                           setSelected(tokenName)
-                          await contract.methods.tokensCreated(tokenName).call({ from: ethereum.selectedAddress }).then(async (address) => {
-                            const tokCon = new web3.eth.Contract(Token.abi, address)
-                            props.setTokenContract(tokCon)
-                            await tokCon.methods.symbol().call({ from: ethereum.selectedAddress }).then(symbol => { props.setTokenSymbol(symbol) })
-                            await tokCon.methods.balanceOf(ethereum.selectedAddress).call({ from: ethereum.selectedAddress }).then(balance => {
-                              let balanceEther = web3.utils.fromWei(balance, 'ether')
-                              props.setBalance(parseFloat(balanceEther))
-                            })
+                          const address = await getAddress(tokenName)
+                          const tokenContract = new web3.eth.Contract(Token.abi, address)
+                          props.setTokenContract(tokenContract)
+                          await tokenContract.methods.symbol().call({ from: ethereum.selectedAddress }).then(symbol => { props.setTokenSymbol(symbol) })
+                          await tokenContract.methods.balanceOf(ethereum.selectedAddress).call({ from: ethereum.selectedAddress }).then(balance => {
+                            let balanceEther = web3.utils.fromWei(balance, 'ether')
+                            props.setBalance(parseFloat(balanceEther))
                           })
+
                           setOpen(false)
                         }} key={index}>{tokenName}</MenuItem>
                       )

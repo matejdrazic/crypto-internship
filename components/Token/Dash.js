@@ -16,6 +16,7 @@ import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
 import CoinFactory from '../../contracts_cf/build/contracts/CoinFactory.json'
 import contract from './CoinFactory.js'
+import firestore from '../Database/Firebase.js'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,9 +61,8 @@ export default function Dash() {
     const [isToken, setIsToken] = useState(false)
     const [balance, setBalance] = useState(0)
 
-
     useEffect(async () => {
-        contract.methods.getNames().call({ from: ethereum.selectedAddress }).then(names => { setNames(names) })
+
     })
 
     const classes = useStyles();
@@ -91,7 +91,7 @@ export default function Dash() {
         setAlert(false)
         setAlertAddress(false)
         setIsToken(false)
-    };
+    }
 
     let mint = async (to, amount) => {
         await tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
@@ -114,7 +114,7 @@ export default function Dash() {
     return (
         <>
             <div className={styles.flex} >
-                <DropdownMenu names={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
+                <DropdownMenu tokenNames={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
             </div>
             <div className={styles.flex} >
                 <TokenAction title="Transfer" icon={0} onClick={() => { tokenContract ? setTransferOpen(true) : setIsToken(true) }} tokenSymbol={tokenSymbol} balance={balance} />
