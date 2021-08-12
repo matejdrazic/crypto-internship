@@ -69,9 +69,9 @@ const CreateToken = () => {
                             variant="outlined"
                             margin="normal"
                             required
-                            id="totalSupply"
-                            label="Total Supply"
-                            name="totalSupply"
+                            id="initialAmount"
+                            label="Initial Amount"
+                            name="initialAmount"
                             type="number"
                             style={{ width: 300, margin: 10 }}
                             onChange={(e) => {

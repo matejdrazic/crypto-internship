@@ -1,8 +1,8 @@
 const SwitchToRopsten = () => {
 
     return(
-        <div>
-            Please switch to ropsten
+        <div className="center textSize ropsten">
+            Switch to Ropsten!
         </div>
     )
 }
