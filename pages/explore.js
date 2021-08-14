@@ -5,21 +5,12 @@ import { useEffect, useState } from 'react'
 
 const explore = () => {
 
-    const [object, setObject] = useState(null)
+    return (
+        <Layout>
+            <AddressSearch />
+        </Layout>
+    )
 
-    useEffect(() => {
-        setObject(window.ethereum)
-    })
-
-    if (object) {
-        return (
-            <Layout>
-                <AddressSearch />
-            </Layout>
-        )
-    } else {
-        return <Auth />
-    }
 }
 
 export default explore

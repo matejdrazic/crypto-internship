@@ -11,23 +11,11 @@ import Link from 'next/link'
 
 const dashboard = () => {
 
-  const [object, setObject] = useState(null)
-
-  useEffect(() => {
-    setObject(window.ethereum)
-  })
-
-  if (object) {
-    return (
-      <Layout>
-        <Dash />
-      </Layout>
-    )
-  } else {
-    return (
-      <Auth />
-    )
-  }
+  return (
+    <Layout>
+      <Dash />
+    </Layout>
+  )
 }
 
 export default dashboard

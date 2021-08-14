@@ -5,21 +5,12 @@ import { useEffect, useState } from 'react'
 
 const createatoken = () => {
 
-    const [object, setObject] = useState(null)
+    return (
+        <Layout>
+            <CreateToken />
+        </Layout>
+    )
 
-    useEffect(() => {
-        setObject(window.ethereum)
-    })
-
-    if (object) {
-        return (
-            <Layout>
-                <CreateToken />
-            </Layout>
-        )
-    } else {
-        return <Auth />
-    }
 }
 
 export default createatoken
