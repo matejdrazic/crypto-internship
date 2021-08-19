@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import Container from '@material-ui/core/Container'
-import Cookies from 'js-cookie'
 import styles from '../../styles/Home.module.css'
-import Box from '@material-ui/core/Box'
-import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 import web3 from './web3'
-import DropdownMenu from './DropdownMenu'
-import contract from './CoinFactory.js'
+import Snackbar from '../Shared/Snackbar'
+import getNames from '../Database/TokenNames.js'
+import Token from '../../contracts_cf/build/contracts/Token.json'
+import getAddress from '../Database/TokenAddress.js'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { ContactsOutlined } from '@material-ui/icons'
+
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -17,32 +18,42 @@ function Alert(props) {
 
 const AddressSearch = () => {
     const [validAddress, setValidAddress] = useState(false)
-    const [balance, setBalance] = useState(0)
-    const [balanceToken, setBalanceToken] = useState(0)
-    const [address, setAddress] = useState("")
+    const [userAddress, setUserAddress] = useState("")
+    const [userAddressClick, setUserAddressClick] = useState("")
     const [alert, setAlert] = useState(false)
-    const [names, setNames] = useState(null)
-    const [tokenContract, setTokenContract] = useState(null)
-    const [tokenSymbol, setTokenSymbol] = useState(null)
+    const [balances, setBalances] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [names, setNames] = useState(false)
+
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-
-        setAlert(false);
-    };
-
-    useEffect(async () => {
-        contract.methods.getNames().call({ from: ethereum.selectedAddress }).then(names => { setNames(names) })
-    })
+        setAlert(false)
+    }
 
     const explore = async () => {
-        await tokenContract.methods.balanceOf(address.toString()).call({ from: ethereum.selectedAddress }).then(bal => {
-            const gotTokens = web3.utils.fromWei(bal, 'ether')
-            setBalanceToken(gotTokens)
-        })
+        setLoading(true)
+        const tokenNames = await getNames()
+        setNames(tokenNames)
+        try {
+            let array = []
+            for (let tokenName of tokenNames) {
+                const address = await getAddress(tokenName)
+                const tokenContract = new web3.eth.Contract(Token.abi, address)
+                const balance = await tokenContract.methods.balanceOf(userAddress).call({ from: ethereum.selectedAddress })
+                const balanceEth = web3.utils.fromWei(balance, 'ether')
+                array.push(balanceEth)
+            }
+            setBalances(array)
+
+        } catch (err) {
+            console.log(err)
+        }
+        setLoading(false)
     }
+
 
     return (
         <div className="center">
@@ -57,17 +68,14 @@ const AddressSearch = () => {
                     name="ethAddress"
                     style={{ width: 300, margin: 10 }}
                     onChange={(e) => {
-                        setAddress(e.target.value)
+                        setUserAddress(e.target.value)
                     }}
                 />
-                <DropdownMenu names={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
-            </div>
-            <div>
                 <Button
                     class="button"
                     style={{ margin: 13 }}
                     onClick={() => {
-                        if (web3.utils.isAddress(address) && tokenContract) {
+                        if (web3.utils.isAddress(userAddress)) {
                             explore()
                         } else {
                             setAlert(true)
@@ -75,14 +83,25 @@ const AddressSearch = () => {
                     }}
                 >Explore</Button>
             </div>
-            <div className="center">
-            <p className="textNunito textSize" >Balance: <b>{balanceToken}</b> {tokenSymbol ? tokenSymbol : ""} </p>
+
+            <div className="marginTop" >
+                {loading ?
+                    <div className="center">
+                        <CircularProgress />
+                    </div>
+                    :
+                    <table className="center">
+                        {
+                            balances.map((balance, index) => {
+                                return <tr className="textNunito textSize"> <td>{names[index]}:</td>&nbsp;&nbsp;<td>{balance}</td> </tr>
+                            })
+                        }
+                    </table>
+                }
             </div>
-            <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
-                <Alert severity="error" onClose={handleClose}>
-                    Address invalid or contract not selected!
-                </Alert>
-            </Snackbar>
+
+            <Snackbar open={alert} autoHideDuration={4000} onClose={handleClose} severity="error"
+                message="Address invalid" />
         </div >
     )
 }

@@ -64,10 +64,11 @@ const Layout = ({ children }) => {
                     <link rel="icon" href="/token.png" />
                 </Head>
                 <Header setTheme={setTheme} theme={theme} />
-                {load ? <>
-                    {chain == 3 ? children : <SwitchToRopsten />}
-                    <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
-                </>
+                {load ?
+                    <>
+                        {chain == 3 ? children : <SwitchToRopsten />}
+                        <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
+                    </>
                     : <div className="center"> <CircularProgress /> </div>}
             </div>
         </ThemeProvider>

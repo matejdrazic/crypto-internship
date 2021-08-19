@@ -60,6 +60,7 @@ export default function Dash() {
     const [tokenSymbol, setTokenSymbol] = useState(null)
     const [isToken, setIsToken] = useState(false)
     const [balance, setBalance] = useState(0)
+    const [hasTokens, setHasTokens] = useState(false)
 
     useEffect(async () => {
 
@@ -91,6 +92,7 @@ export default function Dash() {
         setAlert(false)
         setAlertAddress(false)
         setIsToken(false)
+        setHasTokens(false)
     }
 
     let mint = async (to, amount) => {
@@ -114,7 +116,7 @@ export default function Dash() {
     return (
         <>
             <div className={styles.flex} >
-                <DropdownMenu tokenNames={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
+                <DropdownMenu tokenNames={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} setHasTokens={setHasTokens} />
             </div>
             <div className={styles.flex} >
                 <TokenAction title="Transfer" icon={0} onClick={() => { tokenContract ? setTransferOpen(true) : setIsToken(true) }} tokenSymbol={tokenSymbol} balance={balance} />
@@ -230,8 +232,12 @@ export default function Dash() {
                 </Modal>
 
                 <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose} severity="success" operation={operation} />
-                <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose} severity="error" />
-                <Snackbar open={isToken} autoHideDuration={2000} onClose={handleClose} severity="error" />
+                <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose} severity="error"
+                    message={"Address or amount not valid!"} />
+                <Snackbar open={isToken} autoHideDuration={2000} onClose={handleClose} severity="error" message="Select a Token!" />
+                <Snackbar open={hasTokens} autoHideDuration={4000} onClose={handleClose} severity="error"
+                    message="No tokens created, redirecting to /createatoken ..." />
+
             </div>
         </>
     )

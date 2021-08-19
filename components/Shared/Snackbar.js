@@ -9,7 +9,7 @@ const Snackbar = (props) => {
     return (
         <SnackbarM open={props.open} autoHideDuration={2000} onClose={props.onClose}>
             <Alert severity={props.severity} onClose={props.onClose}>
-                {props.severity === "success" ? `Successful ${props.operation}!` : "Something is wrong!" } 
+                {props.severity === "success" ? `Successful ${props.operation}!` : `${props.message}`}
             </Alert>
         </SnackbarM>
     )

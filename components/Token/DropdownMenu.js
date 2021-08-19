@@ -9,12 +9,14 @@ import MenuList from '@material-ui/core/MenuList'
 import { makeStyles } from '@material-ui/core/styles'
 import { purple } from '@material-ui/core/colors'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Token from '../../contracts_cf/build/contracts/Token.json'
 import web3 from './web3'
 import contract from './CoinFactory.js'
 import firestore from '../Database/Firebase.js'
 import getNames from '../Database/TokenNames.js'
 import getAddress from '../Database/TokenAddress.js'
+import { useRouter } from 'next/router'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "#AA01FA",
     },
   },
+  item: {
+    border: "2px solid #eaeaea",
+    borderRadius: "5px",
+    '&:hover': {
+      color: "#AA01FA",
+      borderColor: "#AA01FA",
+    },
+  },
+  list: {
+    borderRadius: "5px"
+  }
 }));
 
 export default function MenuListComposition(props) {
@@ -40,19 +53,23 @@ export default function MenuListComposition(props) {
   const anchorRef = React.useRef(null)
   const [selected, setSelected] = useState('Select')
   const [names, setNames] = useState(null)
+  const router = useRouter()
 
   useEffect(async () => {
-  })
-
-  const settingUpTokenNames = async () => {
     const namesTemp = await getNames()
     setNames(namesTemp)
-  }
-
-  settingUpTokenNames()
+  }, [])
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    names.length == 0 ? noTokens() : setOpen((prevOpen) => !prevOpen)
+  }
+
+  const noTokens = () => {
+    props.setHasTokens(true)
+    setTimeout(() => {
+      props.setHasTokens(false)
+      router.push('/createatoken')
+    }, 3000)
   }
 
   const handleClose = (event) => {
@@ -89,7 +106,7 @@ export default function MenuListComposition(props) {
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={() => { ethereum.selectedAddress ? handleToggle() : null }}
-          startIcon={<ArrowDropDownIcon />}
+          startIcon={open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
           style={{ width: '120px' }}
           variant="outlined"
           className={classes.button}
@@ -104,11 +121,11 @@ export default function MenuListComposition(props) {
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                  <MenuList className={classes.list} autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
 
                     {names.map((tokenName, index) => {
                       return (
-                        <MenuItem onClick={async () => {
+                        <MenuItem className={classes.item} onClick={async () => {
                           setSelected(tokenName)
                           const address = await getAddress(tokenName)
                           const tokenContract = new web3.eth.Contract(Token.abi, address)
