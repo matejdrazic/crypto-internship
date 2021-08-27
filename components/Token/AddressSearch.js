@@ -93,7 +93,7 @@ const AddressSearch = () => {
                     <table className="center">
                         {
                             balances.map((balance, index) => {
-                                return <tr className="textNunito textSize"> <td>{names[index]}:</td>&nbsp;&nbsp;<td>{balance}</td> </tr>
+                                return <tr key={index} className="textNunito textSize"> <td>{names[index]}:</td>&nbsp;&nbsp;<td>{balance}</td> </tr>
                             })
                         }
                     </table>
