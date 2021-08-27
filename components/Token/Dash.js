@@ -62,9 +62,6 @@ export default function Dash() {
     const [balance, setBalance] = useState(0)
     const [hasTokens, setHasTokens] = useState(false)
 
-    useEffect(async () => {
-
-    })
 
     const classes = useStyles();
 
