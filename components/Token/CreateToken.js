@@ -19,17 +19,21 @@ const CreateToken = () => {
     const [alert, setAlert] = useState(false)
     const [loading, setLoading] = useState(false)
     const [dialog, setDialog] = useState(false)
+    const [emptyFields, setEmptyFields] = useState(false)
 
 
     const createERC20Token = async (Name, Symbol, Amount) => {
-        await contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', async (tx) => {
-            setAlert(true)
-            setLoading(true)
-        }).then(address => {
+        try {
+            await contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', async (tx) => {
+                setAlert(true)
+            }).then(address => {
+                setLoading(false)
+                setAddress(address.events[0].address)
+                saveToken(Name, address.events[0].address)
+            })
+        } catch (err) {
             setLoading(false)
-            setAddress(address.events[0].address)
-            saveToken(Name, address.events[0].address)
-        })
+        }
     }
 
     const handleClose = (event, reason) => {
@@ -38,6 +42,7 @@ const CreateToken = () => {
         }
 
         setAlert(false)
+        setEmptyFields(false)
     }
 
     return (
@@ -106,10 +111,14 @@ const CreateToken = () => {
                                 onClick={() => {
                                     if (name && symbol && amount) {
                                         createERC20Token(name, symbol, amount)
+                                        setLoading(true)
+                                    } else {
+                                        setEmptyFields(true)
                                     }
                                 }}
                             >Create a Token</Button>
                         </div>
+                        <Snackbar open={emptyFields} autoHideDuration={2000} onClose={handleClose} severity="error" message="Please fill out every field" />
                         <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose} severity="success" operation="creation of ERC20 Token" />
                     </div>
                     )
