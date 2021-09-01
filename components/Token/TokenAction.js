@@ -6,7 +6,6 @@ import styles from '../../styles/Home.module.css'
 import Box from '@material-ui/core/Box'
 
 const Card = (props) => {
-    const balance = localStorage.getItem(Cookies.get("address"))
 
     return (
         <Box component="div" onClick={props.onClick} className={styles.card}>

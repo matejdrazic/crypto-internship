@@ -120,3 +120,7 @@ footer {
   position: absolute;
   margin-bottom: 60px; 
 }
+
+.marginTop {
+  margin-top: 25px;
+}

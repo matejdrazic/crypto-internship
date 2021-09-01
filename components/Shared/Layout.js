@@ -7,6 +7,9 @@ import { useState, useStyles, useEffect } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { ThemeContext, ThemeProvider } from 'styled-components'
 import { lightTheme, darkTheme, GlobalStyles } from './Themes.js'
+import router from 'next/router'
+import { useRouter } from 'next/router'
+
 
 const Layout = ({ children }) => {
 
@@ -14,11 +17,16 @@ const Layout = ({ children }) => {
     const [chain, setChain] = useState(0)
     const [address, setAddress] = useState(null)
     const [theme, setTheme] = useState('light')
+    const router = useRouter()
 
     useEffect(() => {
-        network()
-        ethereum.on('chainChanged', chain => { setChain(chain) })
-        ethereum.on('accountsChanged', add => { setAddress(add[0]); setLoad(false) })
+        try {
+            network()
+            ethereum.on('chainChanged', chain => { setChain(chain) })
+            ethereum.on('accountsChanged', add => { setAddress(add[0]); setLoad(false) })
+        } catch (error) {
+            router.push('/')
+        }
     })
 
     setTimeout(() => {
@@ -56,10 +64,11 @@ const Layout = ({ children }) => {
                     <link rel="icon" href="/token.png" />
                 </Head>
                 <Header setTheme={setTheme} theme={theme} />
-                {load ? <>
-                    {chain == 3 ? children : <SwitchToRopsten />}
-                    <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
-                </>
+                {load ?
+                    <>
+                        {chain == 3 ? children : <SwitchToRopsten />}
+                        <Footer chainName={getChainName(chain)} address={address ? address : ethereum.selectedAddress} />
+                    </>
                     : <div className="center"> <CircularProgress /> </div>}
             </div>
         </ThemeProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
@@ -9,9 +9,15 @@ import MenuList from '@material-ui/core/MenuList'
 import { makeStyles } from '@material-ui/core/styles'
 import { purple } from '@material-ui/core/colors'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Token from '../../contracts_cf/build/contracts/Token.json'
 import web3 from './web3'
 import contract from './CoinFactory.js'
+import firestore from '../Database/Firebase.js'
+import getNames from '../Database/TokenNames.js'
+import getAddress from '../Database/TokenAddress.js'
+import { useRouter } from 'next/router'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "#AA01FA",
     },
   },
+  item: {
+    border: "2px solid #eaeaea",
+    borderRadius: "5px",
+    '&:hover': {
+      color: "#AA01FA",
+      borderColor: "#AA01FA",
+    },
+  },
+  list: {
+    borderRadius: "5px"
+  }
 }));
 
 export default function MenuListComposition(props) {
@@ -35,10 +52,25 @@ export default function MenuListComposition(props) {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [selected, setSelected] = useState('Select')
+  const [names, setNames] = useState(null)
+  const router = useRouter()
+
+  useEffect(async () => {
+    const namesTemp = await getNames()
+    setNames(namesTemp)
+  }, [])
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+    names.length == 0 ? noTokens() : setOpen((prevOpen) => !prevOpen)
+  }
+
+  const noTokens = () => {
+    props.setHasTokens(true)
+    setTimeout(() => {
+      props.setHasTokens(false)
+      router.push('/createatoken')
+    }, 3000)
+  }
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -62,7 +94,9 @@ export default function MenuListComposition(props) {
     }
 
     prevOpen.current = open;
+
   }, [open]);
+
 
   return (
     <div className={classes.root}>
@@ -71,9 +105,9 @@ export default function MenuListComposition(props) {
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={handleToggle}
-          startIcon={<ArrowDropDownIcon />}
-          style={{ width: '100px' }}
+          onClick={() => { ethereum.selectedAddress ? handleToggle() : null }}
+          startIcon={open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+          style={{ width: '120px' }}
           variant="outlined"
           className={classes.button}
         >
@@ -87,21 +121,21 @@ export default function MenuListComposition(props) {
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                  <MenuList className={classes.list} autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
 
-                    {props.names.map((tokenName, index) => {
+                    {names.map((tokenName, index) => {
                       return (
-                        <MenuItem onClick={async () => {
+                        <MenuItem className={classes.item} onClick={async () => {
                           setSelected(tokenName)
-                          await contract.methods.tokensCreated(tokenName).call({ from: ethereum.selectedAddress }).then(async (address) => {
-                            const tokCon = new web3.eth.Contract(Token.abi, address)
-                            props.setTokenContract(tokCon)
-                            await tokCon.methods.symbol().call({ from: ethereum.selectedAddress }).then(symbol => { props.setTokenSymbol(symbol) })
-                            await tokCon.methods.balanceOf(ethereum.selectedAddress).call({ from: ethereum.selectedAddress }).then(balance => {
-                              let balanceEther = web3.utils.fromWei(balance, 'ether')
-                              props.setBalance(parseFloat(balanceEther))
-                            })
+                          const address = await getAddress(tokenName)
+                          const tokenContract = new web3.eth.Contract(Token.abi, address)
+                          props.setTokenContract(tokenContract)
+                          await tokenContract.methods.symbol().call({ from: ethereum.selectedAddress }).then(symbol => { props.setTokenSymbol(symbol) })
+                          await tokenContract.methods.balanceOf(ethereum.selectedAddress).call({ from: ethereum.selectedAddress }).then(balance => {
+                            let balanceEther = web3.utils.fromWei(balance, 'ether')
+                            props.setBalance(parseFloat(balanceEther))
                           })
+
                           setOpen(false)
                         }} key={index}>{tokenName}</MenuItem>
                       )

@@ -16,6 +16,7 @@ import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
 import CoinFactory from '../../contracts_cf/build/contracts/CoinFactory.json'
 import contract from './CoinFactory.js'
+import firestore from '../Database/Firebase.js'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,11 +60,8 @@ export default function Dash() {
     const [tokenSymbol, setTokenSymbol] = useState(null)
     const [isToken, setIsToken] = useState(false)
     const [balance, setBalance] = useState(0)
+    const [hasTokens, setHasTokens] = useState(false)
 
-
-    useEffect(async () => {
-        contract.methods.getNames().call({ from: ethereum.selectedAddress }).then(names => { setNames(names) })
-    })
 
     const classes = useStyles();
 
@@ -91,7 +89,8 @@ export default function Dash() {
         setAlert(false)
         setAlertAddress(false)
         setIsToken(false)
-    };
+        setHasTokens(false)
+    }
 
     let mint = async (to, amount) => {
         await tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
@@ -114,7 +113,7 @@ export default function Dash() {
     return (
         <>
             <div className={styles.flex} >
-                <DropdownMenu names={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} />
+                <DropdownMenu tokenNames={names} setTokenContract={setTokenContract} setTokenSymbol={setTokenSymbol} setBalance={setBalance} setHasTokens={setHasTokens} />
             </div>
             <div className={styles.flex} >
                 <TokenAction title="Transfer" icon={0} onClick={() => { tokenContract ? setTransferOpen(true) : setIsToken(true) }} tokenSymbol={tokenSymbol} balance={balance} />
@@ -230,8 +229,12 @@ export default function Dash() {
                 </Modal>
 
                 <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose} severity="success" operation={operation} />
-                <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose} severity="error" />
-                <Snackbar open={isToken} autoHideDuration={2000} onClose={handleClose} severity="error" />
+                <Snackbar open={alertAddress} autoHideDuration={2000} onClose={handleClose} severity="error"
+                    message={"Address or amount not valid!"} />
+                <Snackbar open={isToken} autoHideDuration={2000} onClose={handleClose} severity="error" message="Select a Token!" />
+                <Snackbar open={hasTokens} autoHideDuration={4000} onClose={handleClose} severity="error"
+                    message="No tokens created, redirecting to /createatoken ..." />
+
             </div>
         </>
     )
