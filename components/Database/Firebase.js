@@ -2,14 +2,21 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDXgaykFLxW17jRRnafgdYaTNoJUcz2ARA",
-    authDomain: "createatoken.firebaseapp.com",
-    projectId: "createatoken",
-    storageBucket: "createatoken.appspot.com",
-    messagingSenderId: "582935882635",
-    appId: "1:582935882635:web:34a0f619b07f2b45861d8e",
-    measurementId: "G-6S28FJQ61W"
-}
+
+    apiKey: "AIzaSyAVrPJf9Q8Ku-zsel1Z8gYdskaD12KHzUQ",
+
+    authDomain: "nwtproject-f6e73.firebaseapp.com",
+
+    projectId: "nwtproject-f6e73",
+
+    storageBucket: "nwtproject-f6e73.appspot.com",
+
+    messagingSenderId: "132207537255",
+
+    appId: "1:132207537255:web:985f01e6bcb01909d178c2"
+
+};
+
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)

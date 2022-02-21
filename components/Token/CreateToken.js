@@ -1,13 +1,10 @@
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import React, { useEffect, useState, useRef } from 'react'
-import web3 from './web3.js'
+import React, { useState, useRef } from 'react'
 import contract from './CoinFactory.js'
 import Snackbar from '../Shared/Snackbar'
-import firestore from '../Database/Firebase.js'
 import saveToken from '../Database/SaveTokens.js'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import JokeDialog from '../Jokes/JokeDialog.js'
 
 
 const CreateToken = () => {
@@ -18,18 +15,17 @@ const CreateToken = () => {
     const [address, setAddress] = useState(false)
     const [alert, setAlert] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [dialog, setDialog] = useState(false)
     const [emptyFields, setEmptyFields] = useState(false)
 
 
     const createERC20Token = async (Name, Symbol, Amount) => {
         try {
-            await contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', async (tx) => {
+            contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', () => {
                 setAlert(true)
-            }).then(address => {
+            }).then(async (address) => {
                 setLoading(false)
                 setAddress(address.events[0].address)
-                saveToken(Name, address.events[0].address)
+                await saveToken(Name, address.events[0].address)
             })
         } catch (err) {
             setLoading(false)
@@ -51,9 +47,6 @@ const CreateToken = () => {
                 {loading ? <>
                     <>
                         <CircularProgress />
-                    </>
-                    <>
-                        <JokeDialog />
                     </>
                 </>
                     :
