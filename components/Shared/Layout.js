@@ -3,20 +3,19 @@ import Footer from './Footer.js'
 import Head from 'next/head'
 import web3 from '../Token/web3.js'
 import SwitchToRopsten from './SwitchToRopsten.js'
-import { useState, useStyles, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { ThemeContext, ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'styled-components'
 import { lightTheme, darkTheme, GlobalStyles } from './Themes.js'
-import router from 'next/router'
 import { useRouter } from 'next/router'
-
+import { ThemeContext } from './Mode.js'
 
 const Layout = ({ children }) => {
 
     const [load, setLoad] = useState(false)
     const [chain, setChain] = useState(0)
     const [address, setAddress] = useState(null)
-    const [theme, setTheme] = useState('light')
+    const mode = useContext(ThemeContext)
     const router = useRouter()
 
     useEffect(() => {
@@ -56,14 +55,14 @@ const Layout = ({ children }) => {
     }
 
     return (
-        <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme} >
+        <ThemeProvider theme={mode ? lightTheme : darkTheme} >
             <GlobalStyles />
             <div className="content" >
                 <Head>
                     <title>Crypto internship</title>
                     <link rel="icon" href="/token.png" />
                 </Head>
-                <Header setTheme={setTheme} theme={theme} />
+                <Header />
                 {load ?
                     <>
                         {chain == 3 ? children : <SwitchToRopsten />}
@@ -72,7 +71,6 @@ const Layout = ({ children }) => {
                     : <div className="center"> <CircularProgress /> </div>}
             </div>
         </ThemeProvider>
-
     )
 }
 

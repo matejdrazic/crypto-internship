@@ -1,29 +1,29 @@
-import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
 import Menu from './Menu'
-import Cookies from 'js-cookie'
 import Button from '@material-ui/core/Button'
-import { useRouter } from 'next/router'
-import { green, purple } from '@material-ui/core/colors'
 import Image from 'next/image'
-import { useState } from 'react'
-import { useMediaQuery, useTheme } from '@material-ui/core'
-import { CgSun } from 'react-icons/cg'
-import { HiMoon } from 'react-icons/hi'
 import Box from '@material-ui/core/Box'
+import { HiMoon } from 'react-icons/hi'
+import { CgSun } from 'react-icons/cg'
+import { useRouter } from 'next/router'
+import { useMediaQuery, useTheme } from '@material-ui/core'
+import { useContext } from 'react'
+import { ThemeContext, ThemeContextChange } from './Mode'
 
-const Header = (props) => {
+const Header = () => {
 
     const router = useRouter()
-    const theme = useTheme()
+    const thems = useTheme()
+    const mode = useContext(ThemeContext)
+    const setMode = useContext(ThemeContextChange)
 
-    const isMatch = useMediaQuery(theme.breakpoints.down('sm'))
+    const isMatch = useMediaQuery(thems.breakpoints.down('sm'))
 
     const changeTheme = () => {
-        props.theme === 'light' ? props.setTheme('dark') : props.setTheme('light')
+        mode ? setMode(false) : setMode(true)
     }
 
-    const icon = props.theme === 'light' ? <HiMoon size={40} /> : <CgSun size={40} />
+    const icon = mode ? <HiMoon size={40} /> : <CgSun size={40} />
 
     return (
         isMatch ? (
@@ -49,7 +49,7 @@ const Header = (props) => {
                         <Link href="/about" ><a className={router.pathname === "/about" ? "selected" : ""} >About</a></Link>
                     </div>
                     <div className="themeChanger">
-                        <Button onClick={() => { changeTheme() }} >
+                        <Button onClick={() => { console.log(mode);changeTheme() }} >
                             {icon}
                         </Button>
                     </div>

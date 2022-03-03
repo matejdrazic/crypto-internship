@@ -124,3 +124,7 @@ footer {
 .marginTop {
   margin-top: 25px;
 }
+
+.cursor {
+  cursor: pointer;
+}

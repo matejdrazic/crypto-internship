@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import Dash from '../components/Token/Dash.js'
 import Layout from '../components/Shared/Layout.js'
 

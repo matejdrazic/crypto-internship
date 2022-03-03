@@ -22,40 +22,52 @@ export default function Menu() {
     return (
         <>
             <Drawer
-            anchor='left' onClose={() => { isOpenMenu(false)} } open={openMenu}>
+                anchor='left' onClose={() => { isOpenMenu(false) }} open={openMenu}>
                 <List>
-                    <ListItem onClick={() => { router.push('/dashboard') }} >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <DashboardIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Dashboard" />
-                    </ListItem>
-                    <ListItem onClick={() => { router.push('/explore') }} >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <ExploreIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Explore" />
-                    </ListItem>
-                    <ListItem onClick={() => { router.push('/createatoken') }} >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <AddIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Create a Token" />
-                    </ListItem>
-                    <ListItem onClick={() => { router.push('/about') }} >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <InfoIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="About" />
-                    </ListItem>
+                    <div className='cursor'>
+                        <ListItem onClick={() => { router.push('/dashboard') }} >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <DashboardIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Dashboard" />
+                        </ListItem>
+                    </div>
+                    
+                    <div className='cursor'>
+                        <ListItem onClick={() => { router.push('/explore') }} >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <ExploreIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Explore" />
+                        </ListItem>
+                    </div>
+
+                    <div className='cursor'>
+                        <ListItem onClick={() => { router.push('/createatoken') }} >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <AddIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Create a Token" />
+                        </ListItem>
+                    </div>
+
+                    <div className='cursor'>
+                        <ListItem onClick={() => { router.push('/about') }} >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <InfoIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="About" />
+                        </ListItem>
+                    </div>
+
                 </List>
             </Drawer>
 
