@@ -1,5 +1,4 @@
 const axios = require('axios');
-import { useState } from 'react'
 
 const ethPrice = async () => {
 

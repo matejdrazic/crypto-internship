@@ -1,17 +1,14 @@
 import styles from '../../styles/Home.module.css'
-import Cookies from 'js-cookie'
-import Image from 'next/image'
-import Link from 'next/link'
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined'
 import Button from '@material-ui/core/Button'
 import * as clipboard from "clipboard-polyfill/text"
-import { useRouter } from 'next/router'
 import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container';
 import { useMediaQuery, useTheme } from '@material-ui/core'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import web3 from '../Token/web3.js'
 import ethPrice from './EthPrice.js'
+import { useWeb3Context } from 'web3-react'
 
 const Footer = (props) => {
 
@@ -19,8 +16,8 @@ const Footer = (props) => {
     const [balance, setBalance] = useState(0)
     const [balanceInUSD, setBalanceInUSD] = useState(0)
     const [isBalance, setIsBalance] = useState(true)
+    const context = useWeb3Context()
 
-    const router = useRouter()
     const theme = useTheme()
 
     const isMatch = useMediaQuery(theme.breakpoints.down('sm'))
@@ -30,7 +27,7 @@ const Footer = (props) => {
     }
 
     useEffect(async () => {
-        setAddress(ethereum.selectedAddress)
+        setAddress(context.account)
         const ethAmountInWei = await web3.eth.getBalance(ethereum.selectedAddress)
         const ethAmount = web3.utils.fromWei(ethAmountInWei, 'ether')
         const eth = ethAmount.substring(0, 6)
@@ -44,7 +41,7 @@ const Footer = (props) => {
     // Auth doesnt make sense anymore
     
     const maybeConnect = () => {
-        ethereum.selectedAddress ? null : ethereum.request({ method: 'eth_requestAccounts' })
+        context.account ? null : context.setConnector('MetaMask')
     }
 
     return (

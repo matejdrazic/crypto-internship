@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import TextField from '@material-ui/core/TextField'
-import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import Cookies from 'js-cookie'
-import { green, purple } from '@material-ui/core/colors'
+import { purple } from '@material-ui/core/colors'
 import Image from 'next/image'
-import web3 from '../Token/web3.js'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
-import router from 'next/router'
+import { useWeb3Context } from 'web3-react'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,19 +45,15 @@ function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function Login(props) {
+export default function Login() {
     const classes = useStyles()
     const router = useRouter()
-    const [validAddress, setValidAddress] = useState(false)
-    const [ethAddress, setEthAddress] = useState("")
+    const context = useWeb3Context()
     const [metamask, setMetamask] = useState(false)
     const [load, setLoad] = useState(false)
 
     const handleConnect = async () => {
-        const address = await ethereum.request({ method: 'eth_requestAccounts' })
-        const chainId = await ethereum.request({ method: 'eth_chainId' });
-
-        if (address && chainId == '0x3') router.push('/dashboard')
+        context.setConnector('MetaMask')
     }
 
     setTimeout(() => {
@@ -74,10 +66,6 @@ export default function Login(props) {
         }
         setMetamask(false)
     };
-
-    useEffect(() => {
-        window.ethereum ? (ethereum.selectedAddress ? props.setAddress(true) : props.setAddress(false)) : null
-    })
 
     return (
 
@@ -99,15 +87,7 @@ export default function Login(props) {
                             color={classes.bgColor}
                             className={classes.submit}
                             onClick={() => {
-                                if (window.ethereum) {
-                                    if (ethereum.selectedAddress) {
-                                        router.push('/dashboard')
-                                    } else {
-                                        handleConnect()
-                                    }
-                                } else {
-                                    setMetamask(true)
-                                }
+                                context.account ? router.push('/dashboard') : handleConnect()
                             }}
                         >
                             <b>Connect Wallet</b>

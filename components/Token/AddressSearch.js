@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import styles from '../../styles/Home.module.css'
@@ -9,7 +9,6 @@ import getNames from '../Database/TokenNames.js'
 import Token from '../../contracts_cf/build/contracts/Token.json'
 import getAddress from '../Database/TokenAddress.js'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { ContactsOutlined } from '@material-ui/icons'
 
 
 function Alert(props) {
@@ -22,7 +21,6 @@ const AddressSearch = () => {
     const [balances, setBalances] = useState([])
     const [loading, setLoading] = useState(false)
     const [names, setNames] = useState(false)
-
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
