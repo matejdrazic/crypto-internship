@@ -2,7 +2,7 @@ const SwitchToRopsten = () => {
 
     return(
         <div className="center textSize ropsten">
-            Switch to Ropsten!
+            Connect on button below or switch to Ropsten!
         </div>
     )
 }

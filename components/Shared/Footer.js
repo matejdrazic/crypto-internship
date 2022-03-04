@@ -28,7 +28,10 @@ const Footer = (props) => {
 
     useEffect(async () => {
         setAddress(context.account)
-        const ethAmountInWei = await web3.eth.getBalance(context.account)
+        let ethAmountInWei = '0'
+        if (context.account) {
+            ethAmountInWei = await web3.eth.getBalance(context.account)
+        }
         const ethAmount = web3.utils.fromWei(ethAmountInWei, 'ether')
         const eth = ethAmount.substring(0, 6)
         setBalance(eth)
@@ -39,7 +42,7 @@ const Footer = (props) => {
 
     // This function is to replace the 'connect' button necessary on the page in case user goes to /dashboard path since 
     // Auth doesnt make sense anymore
-    
+
     const maybeConnect = () => {
         context.account ? null : context.setConnector('MetaMask')
     }
@@ -51,7 +54,7 @@ const Footer = (props) => {
                     <Box className={isMatch ? "hidden" : "textNunito"} onClick={() => { handleBalanceClick() }} width="160px">
                         <Button class="button"> {isBalance ? balance + " ETH" : balanceInUSD + " USD"} </Button>
                     </Box>
-                    <Box className="border" onClick={() => { maybeConnect() }} >
+                    <Box className="border cursor" onClick={() => { maybeConnect() }} >
                         {context.account ? context.account.substring(0, 8) + ' ... ' + context.account.substring(context.account.length - 6, context.account.length) : "Account not connected"}
                         <Button>
                             <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />

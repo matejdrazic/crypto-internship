@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
 
     useEffect(() => {
         context.setFirstValidConnector(['MetaMask'])
-    })
+    }, [])
 
     setTimeout(() => {
         setLoad(true)
@@ -53,7 +53,7 @@ const Layout = ({ children }) => {
                 <Header />
                 {load ?
                     <>
-                        {context.networkId == 3 ? children : <SwitchToRopsten />}
+                        {context.networkId == 3 && context.account? children : <SwitchToRopsten />}
                         <Footer chainName={getChainName(context.networkId)} />
                     </>
                     : <div className="center"> <CircularProgress /> </div>}

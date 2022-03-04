@@ -11,6 +11,7 @@ import Snackbar from '../Shared/Snackbar'
 import DropdownMenu from './DropdownMenu'
 import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
+import { useWeb3Context } from 'web3-react'
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -54,6 +55,7 @@ export default function Dash() {
     const [isToken, setIsToken] = useState(false)
     const [balance, setBalance] = useState(0)
     const [hasTokens, setHasTokens] = useState(false)
+    const context = useWeb3Context()
 
     const classes = useStyles();
 
@@ -85,7 +87,7 @@ export default function Dash() {
     }
 
     let mint = async (to, amount) => {
-        tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('receipt', (tx) => {
+        tokenContract.methods._mint(to, amount).send({ from: context.account }).on('receipt', (tx) => {
             setBalance(amountTypedIn + balance)
             setAlert(true)
             setOperation("minting")
@@ -94,7 +96,7 @@ export default function Dash() {
     }
 
     let transfer = async (to, amount) => {
-        tokenContract.methods.transfer(to, amount).send({ from: ethereum.selectedAddress }).on('receipt', (tx) => {
+        tokenContract.methods.transfer(to, amount).send({ from: context.account }).on('receipt', (tx) => {
             setBalance(balance - amountTypedIn)
             setAlert(true)
             setOperation("transfer")
