@@ -12,8 +12,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Token from '../../contracts_cf/build/contracts/Token.json'
 import web3 from './web3'
-import contract from './CoinFactory.js'
-import firestore from '../Database/Firebase.js'
 import getNames from '../Database/TokenNames.js'
 import getAddress from '../Database/TokenAddress.js'
 import { useRouter } from 'next/router'

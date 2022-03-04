@@ -17,9 +17,7 @@ function Alert(props) {
 }
 
 const AddressSearch = () => {
-    const [validAddress, setValidAddress] = useState(false)
     const [userAddress, setUserAddress] = useState("")
-    const [userAddressClick, setUserAddressClick] = useState("")
     const [alert, setAlert] = useState(false)
     const [balances, setBalances] = useState([])
     const [loading, setLoading] = useState(false)

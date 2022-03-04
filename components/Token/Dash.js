@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import Auth from "../Authorization/Auth.js"
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import TokenAction from "./TokenAction.js"
 import styles from '../../styles/Home.module.css'
 import { makeStyles } from '@material-ui/core/styles'
@@ -14,10 +11,6 @@ import Snackbar from '../Shared/Snackbar'
 import DropdownMenu from './DropdownMenu'
 import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
-import CoinFactory from '../../contracts_cf/build/contracts/CoinFactory.json'
-import contract from './CoinFactory.js'
-import firestore from '../Database/Firebase.js'
-
 
 const useStyles = makeStyles((theme) => ({
     modal: {

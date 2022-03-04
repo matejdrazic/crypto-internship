@@ -1,7 +1,6 @@
 import React from 'react'
 import AddIcon from '@material-ui/icons/Add';
 import TransferWithinAStationIcon from '@material-ui/icons/TransferWithinAStation';
-import Cookies from 'js-cookie'
 import styles from '../../styles/Home.module.css'
 import Box from '@material-ui/core/Box'
 
