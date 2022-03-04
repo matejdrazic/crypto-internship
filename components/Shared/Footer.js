@@ -28,7 +28,7 @@ const Footer = (props) => {
 
     useEffect(async () => {
         setAddress(context.account)
-        const ethAmountInWei = await web3.eth.getBalance(ethereum.selectedAddress)
+        const ethAmountInWei = await web3.eth.getBalance(context.account)
         const ethAmount = web3.utils.fromWei(ethAmountInWei, 'ether')
         const eth = ethAmount.substring(0, 6)
         setBalance(eth)
@@ -52,7 +52,7 @@ const Footer = (props) => {
                         <Button class="button"> {isBalance ? balance + " ETH" : balanceInUSD + " USD"} </Button>
                     </Box>
                     <Box className="border" onClick={() => { maybeConnect() }} >
-                        {props.address ? props.address.substring(0, 8) + ' ... ' + props.address.substring(props.address.length - 6, props.address.length) : "Account not connected"}
+                        {context.account ? context.account.substring(0, 8) + ' ... ' + context.account.substring(context.account.length - 6, context.account.length) : "Account not connected"}
                         <Button>
                             <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />
                         </Button>

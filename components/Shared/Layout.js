@@ -15,6 +15,8 @@ const Layout = ({ children }) => {
     const mode = useContext(ThemeContext)
     const context = useWeb3Context()
 
+    console.log(context)
+
     useEffect(() => {
         context.setFirstValidConnector(['MetaMask'])
     })
@@ -52,7 +54,7 @@ const Layout = ({ children }) => {
                 {load ?
                     <>
                         {context.networkId == 3 ? children : <SwitchToRopsten />}
-                        <Footer chainName={getChainName(context.networkId)} address={context.account ? context.account : null} />
+                        <Footer chainName={getChainName(context.networkId)} />
                     </>
                     : <div className="center"> <CircularProgress /> </div>}
             </div>
