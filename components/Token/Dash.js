@@ -93,7 +93,7 @@ export default function Dash() {
     }
 
     let mint = async (to, amount) => {
-        await tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
+        tokenContract.methods._mint(to, amount).send({ from: ethereum.selectedAddress }).on('receipt', (tx) => {
             setBalance(amountTypedIn + balance)
             setAlert(true)
             setOperation("minting")
@@ -102,7 +102,7 @@ export default function Dash() {
     }
 
     let transfer = async (to, amount) => {
-        await tokenContract.methods.transfer(to, amount).send({ from: ethereum.selectedAddress }).on('transactionHash', (tx) => {
+        tokenContract.methods.transfer(to, amount).send({ from: ethereum.selectedAddress }).on('receipt', (tx) => {
             setBalance(balance - amountTypedIn)
             setAlert(true)
             setOperation("transfer")

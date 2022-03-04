@@ -36,7 +36,7 @@ const Footer = (props) => {
         const eth = ethAmount.substring(0, 6)
         setBalance(eth)
         const price = await ethPrice()
-        const balanceUSD = price * parseInt(eth)
+        const balanceUSD = price * parseFloat(eth)
         setBalanceInUSD(balanceUSD.toFixed(2))
     })
 
