@@ -52,8 +52,10 @@ export default function Login() {
     const [metamask, setMetamask] = useState(false)
     const [load, setLoad] = useState(false)
 
+    console.log(context)
+
     const handleConnect = async () => {
-        context.setConnector('MetaMask')
+        window.ethereum ? context.setConnector('MetaMask', { networkId: 3 }) : setMetamask(true)
     }
 
     setTimeout(() => {
