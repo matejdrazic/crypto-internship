@@ -5,7 +5,7 @@ import * as clipboard from "clipboard-polyfill/text"
 import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container';
 import { useMediaQuery, useTheme } from '@material-ui/core'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import web3 from '../Token/web3.js'
 import ethPrice from './EthPrice.js'
 import { useWeb3Context } from 'web3-react'
@@ -17,6 +17,7 @@ const Footer = (props) => {
     const [balanceInUSD, setBalanceInUSD] = useState(0)
     const [isBalance, setIsBalance] = useState(true)
     const context = useWeb3Context()
+    const { account } = useWeb3Context()
 
     const theme = useTheme()
 
@@ -27,10 +28,10 @@ const Footer = (props) => {
     }
 
     useEffect(async () => {
-        setAddress(context.account)
+        setAddress(account)
         let ethAmountInWei = '0'
-        if (context.account) {
-            ethAmountInWei = await web3.eth.getBalance(context.account)
+        if (account) {
+            ethAmountInWei = await web3.eth.getBalance(account)
         }
         const ethAmount = web3.utils.fromWei(ethAmountInWei, 'ether')
         const eth = ethAmount.substring(0, 6)
@@ -44,7 +45,7 @@ const Footer = (props) => {
     // Auth doesnt make sense anymore
 
     const maybeConnect = () => {
-        context.account ? null : context.setConnector('MetaMask')
+        account ? null : context.setConnector('MetaMask')
     }
 
     return (
@@ -55,7 +56,7 @@ const Footer = (props) => {
                         <Button class="button"> {isBalance ? balance + " ETH" : balanceInUSD + " USD"} </Button>
                     </Box>
                     <Box className="border cursor" onClick={() => { maybeConnect() }} >
-                        {context.account ? context.account.substring(0, 8) + ' ... ' + context.account.substring(context.account.length - 6, context.account.length) : "Account not connected"}
+                        {account ? account.substring(0, 8) + ' ... ' + account.substring(account.length - 6, account.length) : "Account not connected"}
                         <Button>
                             <FileCopyOutlinedIcon onClick={() => { clipboard.writeText(address) }} />
                         </Button>

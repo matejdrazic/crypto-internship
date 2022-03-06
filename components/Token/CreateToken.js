@@ -1,11 +1,11 @@
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import React, { useState, useRef } from 'react'
-import contract from './CoinFactory.js'
+import React, { useState, useEffect } from 'react'
 import Snackbar from '../Shared/Snackbar'
 import saveToken from '../Database/SaveTokens.js'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
+import CoinFactory from '../../contracts_cf/build/contracts/CoinFactory.json'
+import { ethers } from 'ethers'
 
 const CreateToken = () => {
 
@@ -16,17 +16,31 @@ const CreateToken = () => {
     const [alert, setAlert] = useState(false)
     const [loading, setLoading] = useState(false)
     const [emptyFields, setEmptyFields] = useState(false)
+    const [contract, setContract] = useState(null)
+
+    useEffect(() => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract('0xE62b7d6DAbf79cC1C43d7A4b5a394FfFFcD199FA', CoinFactory.abi, signer)
+        setContract(contract)
+    }, [])
 
 
     const createERC20Token = async (Name, Symbol, Amount) => {
         try {
-            contract.methods.createERC20Token(Name, Symbol, Amount).send({ from: ethereum.selectedAddress }).on('transactionHash', () => {
+            /* contract.createERC20Token(Name, Symbol, Amount).on('receipt', () => {
                 setAlert(true)
             }).then(async (address) => {
                 setLoading(false)
                 setAddress(address.events[0].address)
                 await saveToken(Name, address.events[0].address)
-            })
+            }) */
+            const tx = await contract.createERC20Token(Name, Symbol, Amount)
+            const receipt = await tx.wait()
+            setLoading(false)
+            setAddress(receipt.events[0].address)
+            await saveToken(Name, receipt.events[0].address)
+
         } catch (err) {
             setLoading(false)
         }
@@ -101,10 +115,10 @@ const CreateToken = () => {
                             <Button
                                 class="button"
                                 style={{ margin: 10 }}
-                                onClick={() => {
+                                onClick={async () => {
                                     if (name && symbol && amount) {
-                                        createERC20Token(name, symbol, amount)
                                         setLoading(true)
+                                        await createERC20Token(name, symbol, amount)
                                     } else {
                                         setEmptyFields(true)
                                     }
