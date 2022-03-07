@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
@@ -14,7 +14,10 @@ import Token from '../../contracts_cf/build/contracts/Token.json'
 import web3 from './web3'
 import getNames from '../Database/TokenNames.js'
 import getAddress from '../Database/TokenAddress.js'
+import { provider } from './provider'
 import { useRouter } from 'next/router'
+import { useWeb3Context } from 'web3-react'
+import { ethers } from 'ethers'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,16 +50,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MenuListComposition(props) {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef(null)
-  const [selected, setSelected] = useState('Select')
+  const [open, setOpen] = useState(false)
+  const anchorRef = useRef(null)
+  const [selected, setSelected] = useState('select')
   const [names, setNames] = useState(null)
   const router = useRouter()
+  const context = useWeb3Context()
 
   useEffect(async () => {
-    const namesTemp = await getNames()
+
+    const namesTemp = await getNames(context.account.toLowerCase())
+    namesTemp.length == 0 ? setSelected('select') : null
     setNames(namesTemp)
-  }, [])
+    props.setTokenContract(null)
+    props.setTokenSymbol(null)
+    props.setBalance(0)
+
+  }, [context.account])
 
   const handleToggle = () => {
     names.length == 0 ? noTokens() : setOpen((prevOpen) => !prevOpen)
@@ -85,8 +95,8 @@ export default function MenuListComposition(props) {
     }
   }
 
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
+  const prevOpen = useRef(open);
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
@@ -103,7 +113,7 @@ export default function MenuListComposition(props) {
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={() => { ethereum.selectedAddress ? handleToggle() : null }}
+          onClick={() => { context.account ? handleToggle() : null }}
           startIcon={open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
           style={{ width: '120px' }}
           variant="outlined"
@@ -126,11 +136,11 @@ export default function MenuListComposition(props) {
                         <MenuItem className={classes.item} onClick={async () => {
                           setSelected(tokenName)
                           const address = await getAddress(tokenName)
-                          const tokenContract = new web3.eth.Contract(Token.abi, address)
+                          const tokenContract = new ethers.Contract(address, Token.abi, provider)
                           props.setTokenContract(tokenContract)
-                          await tokenContract.methods.symbol().call({ from: ethereum.selectedAddress }).then(symbol => { props.setTokenSymbol(symbol) })
-                          await tokenContract.methods.balanceOf(ethereum.selectedAddress).call({ from: ethereum.selectedAddress }).then(balance => {
-                            let balanceEther = web3.utils.fromWei(balance, 'ether')
+                          tokenContract.symbol().then(symbol => { props.setTokenSymbol(symbol) })
+                          tokenContract.balanceOf(context.account).then(balance => {
+                            let balanceEther = ethers.utils.formatEther(balance)
                             props.setBalance(parseFloat(balanceEther))
                           })
 

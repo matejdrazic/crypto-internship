@@ -2,7 +2,7 @@
 const About = () => {
     return (
         <div>
-            <p>This is the about page in my NWT project.</p>
+            <p>Made with nextjs, react, firebase for token info storing, truffle for smart contract deployment.</p>
         </div>
     )
 }
