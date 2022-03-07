@@ -15,8 +15,6 @@ const Layout = ({ children }) => {
     const mode = useContext(ThemeContext)
     const context = useWeb3Context()
 
-    console.log(context)
-
     useEffect(() => {
         context.setFirstValidConnector(['MetaMask'])
     }, [])

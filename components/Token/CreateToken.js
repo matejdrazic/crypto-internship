@@ -28,13 +28,6 @@ const CreateToken = () => {
 
     const createERC20Token = async (Name, Symbol, Amount) => {
         try {
-            /* contract.createERC20Token(Name, Symbol, Amount).on('receipt', () => {
-                setAlert(true)
-            }).then(async (address) => {
-                setLoading(false)
-                setAddress(address.events[0].address)
-                await saveToken(Name, address.events[0].address)
-            }) */
             const tx = await contract.createERC20Token(Name, Symbol, Amount)
             const receipt = await tx.wait()
             setLoading(false)

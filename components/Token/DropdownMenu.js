@@ -11,10 +11,9 @@ import { purple } from '@material-ui/core/colors'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Token from '../../contracts_cf/build/contracts/Token.json'
-import web3 from './web3'
 import getNames from '../Database/TokenNames.js'
 import getAddress from '../Database/TokenAddress.js'
-import { provider } from './provider'
+import { signerProvider } from './provider'
 import { useRouter } from 'next/router'
 import { useWeb3Context } from 'web3-react'
 import { ethers } from 'ethers'
@@ -54,6 +53,7 @@ export default function MenuListComposition(props) {
   const anchorRef = useRef(null)
   const [selected, setSelected] = useState('select')
   const [names, setNames] = useState(null)
+  const [signer, setSigner] = useState(null)
   const router = useRouter()
   const context = useWeb3Context()
 
@@ -65,6 +65,10 @@ export default function MenuListComposition(props) {
     props.setTokenContract(null)
     props.setTokenSymbol(null)
     props.setBalance(0)
+
+    let provider = new ethers.providers.Web3Provider(window.ethereum)
+
+    setSigner(provider.getSigner())
 
   }, [context.account])
 
@@ -136,7 +140,7 @@ export default function MenuListComposition(props) {
                         <MenuItem className={classes.item} onClick={async () => {
                           setSelected(tokenName)
                           const address = await getAddress(tokenName)
-                          const tokenContract = new ethers.Contract(address, Token.abi, provider)
+                          const tokenContract = new ethers.Contract(address, Token.abi, signer)
                           props.setTokenContract(tokenContract)
                           tokenContract.symbol().then(symbol => { props.setTokenSymbol(symbol) })
                           tokenContract.balanceOf(context.account).then(balance => {

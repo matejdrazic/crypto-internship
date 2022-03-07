@@ -11,7 +11,7 @@ import Snackbar from '../Shared/Snackbar'
 import DropdownMenu from './DropdownMenu'
 import web3 from './web3'
 import MuiAlert from '@material-ui/lab/Alert'
-import { useWeb3Context } from 'web3-react'
+import { CircularProgress } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -55,7 +55,7 @@ export default function Dash() {
     const [isToken, setIsToken] = useState(false)
     const [balance, setBalance] = useState(0)
     const [hasTokens, setHasTokens] = useState(false)
-    const context = useWeb3Context()
+    const [progress, setProgress] = useState(false)
 
     const classes = useStyles();
 
@@ -87,21 +87,31 @@ export default function Dash() {
     }
 
     let mint = async (to, amount) => {
-        tokenContract.methods._mint(to, amount).send({ from: context.account }).on('receipt', (tx) => {
+        try {
+            setProgress(true)
+            let tx = await tokenContract._mint(to, amount)
+            await tx.wait()
             setBalance(amountTypedIn + balance)
             setAlert(true)
             setOperation("minting")
             handleMintClose()
-        })
+        } catch (err) {
+            setProgress(false)
+        }
     }
 
     let transfer = async (to, amount) => {
-        tokenContract.methods.transfer(to, amount).send({ from: context.account }).on('receipt', (tx) => {
-            setBalance(balance - amountTypedIn)
+        try {
+            setProgress(true)
+            let tx = await tokenContract.transfer(to, amount)
+            await tx.wait()
+            setBalance(amountTypedIn + balance)
             setAlert(true)
-            setOperation("transfer")
-            handleTransferClose()
-        })
+            setOperation("transfering")
+            handleMintClose()
+        } catch (err) {
+            setProgress(false)
+        }
     }
 
     return (
@@ -127,49 +137,52 @@ export default function Dash() {
                     <Fade in={transferOpen}>
                         <div className={classes.paper}>
                             <h2 id="transition-modal-title">Transfer</h2>
-                            <div>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    type="number"
-                                    step=".01"
-                                    id="amountToTransfer"
-                                    label="Transfer amount"
-                                    name="amountToTransfer"
-                                    helperText={"Please enter valid ether amount"}
-                                    error={!validTransferAmount}
-                                    onChange={(e) => {
-                                        setAmountTypedIn(parseFloat(e.target.value))
-                                        balance >= parseFloat(e.target.value) && parseFloat(e.target.value) >= 0 ? setValidTransferAmount(true) : setValidTransferAmount(false)
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    id="ethAddress"
-                                    label="Ethereum Address"
-                                    name="ethAddress"
-                                    onChange={(e) => {
-                                        setAddressTransfer(e.target.value.toString())
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <Button
-                                    class="button"
-                                    onClick={() => {
-                                        if (web3.utils.isAddress(addressTransfer) && validTransferAmount) {
-                                            let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
-                                            transfer(addressTransfer, amountInWei)
-                                        } else {
-                                            setAlertAddress(true)
-                                        }
-                                    }} >Transfer</Button>
-                            </div>
+                            {progress ? <CircularProgress /> : <>
+                                <div>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        type="number"
+                                        step=".01"
+                                        id="amountToTransfer"
+                                        label="Transfer amount"
+                                        name="amountToTransfer"
+                                        helperText={"Please enter valid ether amount"}
+                                        error={!validTransferAmount}
+                                        onChange={(e) => {
+                                            setAmountTypedIn(parseFloat(e.target.value))
+                                            balance >= parseFloat(e.target.value) && parseFloat(e.target.value) >= 0 ? setValidTransferAmount(true) : setValidTransferAmount(false)
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        id="ethAddress"
+                                        label="Ethereum Address"
+                                        name="ethAddress"
+                                        onChange={(e) => {
+                                            setAddressTransfer(e.target.value.toString())
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <Button
+                                        class="button"
+                                        onClick={() => {
+                                            if (web3.utils.isAddress(addressTransfer) && validTransferAmount) {
+                                                let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                                transfer(addressTransfer, amountInWei)
+                                            } else {
+                                                setAlertAddress(true)
+                                            }
+                                        }} >Transfer</Button>
+                                </div>
+                            </>
+                            }
                         </div>
                     </Fade>
                 </Modal>
@@ -189,34 +202,37 @@ export default function Dash() {
                     <Fade in={mintOpen}>
                         <div className={classes.paper}>
                             <h2 id="transition-modal-title">Mint</h2>
-                            <div>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    type="number"
-                                    id="mint"
-                                    label="Amount"
-                                    name="mint"
-                                    error={!validAmount}
-                                    autoFocus
-                                    helperText="Please enter valid ethereum amount"
-                                    onChange={(e) => {
-                                        parseFloat(e.target.value) > 0 ? setValidAmount(true) : setValidAmount(false)
-                                        setAmountTypedIn(parseFloat(e.target.value))
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <Button
-                                    class="button"
-                                    onClick={() => {
-                                        if (validAmount) {
-                                            let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
-                                            mint(ethereum.selectedAddress, amountInWei)
-                                        }
-                                    }} >MINT</Button>
-                            </div>
+                            {progress ? <CircularProgress /> : <>
+                                <div>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        type="number"
+                                        id="mint"
+                                        label="Amount"
+                                        name="mint"
+                                        error={!validAmount}
+                                        autoFocus
+                                        helperText="Please enter valid ethereum amount"
+                                        onChange={(e) => {
+                                            parseFloat(e.target.value) > 0 ? setValidAmount(true) : setValidAmount(false)
+                                            setAmountTypedIn(parseFloat(e.target.value))
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <Button
+                                        class="button"
+                                        onClick={() => {
+                                            if (validAmount) {
+                                                let amountInWei = web3.utils.toWei(amountTypedIn.toString(), 'ether')
+                                                mint(ethereum.selectedAddress, amountInWei)
+                                            }
+                                        }} >MINT</Button>
+                                </div>
+                            </>
+                            }
                         </div>
                     </Fade>
 
